@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">JetNetwork</string>
+    <string name="default_web_client_id">186994047741-dg2212jt7iufapijh2fvntraou8gde9d.apps.googleusercontent.com</string>
+    <string name="email">Email</string>
+    <string name="sign_in_google_button">Sign in with Google</string>
+    <string name="sign_in_button">Sign in</string>
+    <string name="sign_up_button">Sign Up</string>
+    <string name="or">or</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+</resources>
