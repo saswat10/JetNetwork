@@ -1,14 +1,9 @@
 package com.saswat10.jetnetwork.presentation.feed
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Ease
-import androidx.compose.animation.core.EaseInBounce
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,39 +34,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
-import com.saswat10.jetnetwork.domain.models.Post
+import com.saswat10.jetnetwork.domain.models.Comment
 import com.saswat10.jetnetwork.ui.theme.Pink
-import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
+import com.saswat10.jetnetwork.utils.formatName
 import com.saswat10.jetnetwork.utils.formattedTime
 
 @Composable
 fun FeedItem(
     postWithLikes: PostWithLikes,
-    addComment: () -> Unit, // TODO
-    toggleLike: () -> Unit, // TODO
+    comments: List<Comment>,
+    getComments: ()->Unit,
+    addComment: (String) -> Unit, // TODO
+    toggleLike: () -> Unit,
     toggleBookMark: () -> Unit // TODO
 ) {
 
     val feed = postWithLikes.post
     val isLiked = postWithLikes.isLiked
     val animatedIsLiked: Color by animateColorAsState(if(isLiked) Pink else Color.Gray, label="color", animationSpec = tween(easing = Ease, durationMillis = 200))
-    Column(
+    Card(
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.padding(6.dp, 4.dp).fillMaxWidth()
+            modifier = Modifier.padding(6.dp, 10.dp, 6.dp, 4.dp).fillMaxWidth()
         ) {
             Icon(Icons.Default.AccountCircle, null, Modifier.size(30.dp))
             Column{
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically) {
-                    Text("@" + feed.username, style = MaterialTheme.typography.labelLarge)
+                    Text(formatName(feed.username), style = MaterialTheme.typography.labelLarge)
                     Text(
                         formattedTime(feed.createdAt),
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -108,17 +105,9 @@ fun FeedItem(
 
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(R.drawable.comment_24px),
-                                "Comment",
-                                modifier = Modifier
-                                    .size(26.dp)
-                                    .clip(CircleShape)
-                                    .clickable {}
-                                    .padding(4.dp)
-                            )
+                            CommentBottomSheetIcon(comments = comments, getComments = {getComments()})
                             Spacer(Modifier.width(4.dp))
-                            Text(feed.comments.toString(), style = MaterialTheme.typography.labelLarge)
+                            Text(feed.comments.toString(), style = MaterialTheme.typography.labelLarge, color = Color.Gray)
                         }
                     }
                     Icon(
@@ -134,22 +123,20 @@ fun FeedItem(
                 }
             }
         }
-        HorizontalDivider()
-
     }
 }
 
-@Preview(apiLevel = 34, showSystemUi = false, showBackground = false)
-@Composable
-fun FeedItemPreview() {
-    FeedItem(PostWithLikes(), {}, {}, {})
-}
-
-@Preview(
-    apiLevel = 34, showSystemUi = false, showBackground = false,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
-)
-@Composable
-fun FeedItemDarkPreview() {
-    FeedItem(PostWithLikes(), {}, {}, {})
-}
+//@Preview(apiLevel = 34, showSystemUi = false, showBackground = false)
+//@Composable
+//fun FeedItemPreview() {
+//    FeedItem(PostWithLikes(), {}, {}, {})
+//}
+//
+//@Preview(
+//    apiLevel = 34, showSystemUi = false, showBackground = false,
+//    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+//)
+//@Composable
+//fun FeedItemDarkPreview() {
+//    FeedItem(PostWithLikes(), {}, {}, {})
+//}

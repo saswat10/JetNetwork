@@ -6,6 +6,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
+import com.saswat10.jetnetwork.domain.models.Comment
 import com.saswat10.jetnetwork.domain.models.Post
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.FeedRepository
@@ -34,8 +35,8 @@ class FeedRepositoryImpl @Inject constructor(
                 .collection(POSTS_COLLECTION)
                 .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
                 .dataObjects<Post>()
-                .mapLatest {posts ->
-                    posts.map{
+                .mapLatest { posts ->
+                    posts.map {
                         val isLiked = checkLikeStatus(it.id, authRepository.currentUserId)
                         PostWithLikes(post = it, isLiked = isLiked)
                     }
@@ -63,13 +64,66 @@ class FeedRepositoryImpl @Inject constructor(
 
                 it.set(
                     Firebase.firestore.collection(POSTS_COLLECTION).document(postId)
-                        .collection(LIKES_SUBCOLLECTION).document(authRepository.currentUserId), mapOf<String, Any>())
+                        .collection(LIKES_SUBCOLLECTION).document(authRepository.currentUserId),
+                    mapOf<String, Any>()
+                )
 
                 it.update(
                     Firebase.firestore.collection(POSTS_COLLECTION).document(postId), FIELD_LIKES,
                     FieldValue.increment(+1)
                 )
             }
+        }.await()
+    }
+
+    override suspend fun getComments(postId: String): Flow<List<Comment>> {
+        return authRepository.currentUser.flatMapLatest { user ->
+            Firebase.firestore
+                .collection(POSTS_COLLECTION)
+                .document(postId)
+                .collection(COMMENTS_SUBCOLLECTION)
+                .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
+                .dataObjects<Comment>()
+        }
+    }
+
+    override suspend fun createComment(comment: Comment) {
+        val commentWithUserData = comment.copy(
+            userId = authRepository.currentUserId,
+            username = authRepository.currentUserName,
+            photoUrl = authRepository.currentPhotoUrl
+        )
+        Firebase.firestore.runTransaction {
+            it.set(Firebase.firestore
+                .collection(POSTS_COLLECTION)
+                .document(comment.postId)
+                .collection(COMMENTS_SUBCOLLECTION)
+                .document(comment.id), commentWithUserData)
+            it.update(Firebase.firestore
+                .collection(POSTS_COLLECTION)
+                .document(comment.postId), FIELD_COMMENTS, FieldValue.increment((+1)))
+        }.await()
+    }
+
+    override suspend fun updateComment(comment: Comment) {
+        Firebase.firestore
+            .collection(POSTS_COLLECTION)
+            .document(comment.postId)
+            .collection(COMMENTS_SUBCOLLECTION)
+            .document(comment.id)
+            .set(comment).await()
+    }
+
+    override suspend fun deleteComment(commentId: String, postId: String) {
+        Firebase.firestore.runTransaction {
+            it.delete(Firebase.firestore
+                .collection(POSTS_COLLECTION)
+                .document(postId)
+                .collection(COMMENTS_SUBCOLLECTION)
+                .document(commentId))
+            it.update(Firebase.firestore
+                .collection(POSTS_COLLECTION)
+                .document(postId), FIELD_COMMENTS, FieldValue.increment((-1)))
         }.await()
     }
 
@@ -88,7 +142,9 @@ class FeedRepositoryImpl @Inject constructor(
     companion object {
         private const val POSTS_COLLECTION = "posts"
         private const val LIKES_SUBCOLLECTION = "likes"
+        private const val COMMENTS_SUBCOLLECTION = "comments"
         private const val FIELD_LIKES = "likes"
+        private const val FIELD_COMMENTS = "comments"
         private const val TIMESTAMP = "createdAt"
     }
 }

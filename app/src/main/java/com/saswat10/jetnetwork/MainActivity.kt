@@ -7,19 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imeNestedScroll
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import com.saswat10.jetnetwork.presentation.accounts_center.AccountsScreen
-import com.saswat10.jetnetwork.presentation.auth.login.LoginScreen
-import com.saswat10.jetnetwork.presentation.post.Post
-import com.saswat10.jetnetwork.presentation.posts_list.PostListScreen
+import com.saswat10.jetnetwork.presentation.feed.FeedScreen
 import com.saswat10.jetnetwork.ui.theme.JetNetworkTheme
-import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
 //                    AccountsScreen(modifier = Modifier.padding(padding))
 //                    LoginScreen(modifier = Modifier.padding(padding))
-                    PostListScreen()
+                    FeedScreen()
                 }
 
             }

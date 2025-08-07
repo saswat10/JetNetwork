@@ -24,7 +24,6 @@ fun formattedTime(timestamp: Timestamp): String {
         seconds < 48 * HOUR -> "yesterday"
         seconds < 30 * DAY -> "${seconds / DAY} days ago"
         seconds < 12 * MONTH -> "${seconds / MONTH} months ago"
-        seconds < YEAR -> "${seconds / YEAR} years ago"
         else -> "a long time ago"
     }
 }
@@ -43,7 +42,10 @@ fun formattedTime(timeInMillis: Long): String {
         seconds < 48 * HOUR -> "yesterday"
         seconds < 30 * DAY -> "${seconds / DAY} days ago"
         seconds < 12 * MONTH -> "${seconds / MONTH} months ago"
-        seconds < YEAR -> "${seconds / YEAR} years ago"
         else -> "a long time ago"
     }
+}
+
+fun formatName(string: String): String{
+    return string.ifBlank { "anonymous user" }
 }
