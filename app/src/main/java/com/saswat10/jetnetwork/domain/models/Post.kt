@@ -14,6 +14,8 @@ data class Post(
     val userId: String = "",
     val username: String = "",
     val photoUrl: String = "",
+    val likes: Int = 0,
+    val comments: Int = 0,
     @ServerTimestamp val createdAt: Timestamp = Timestamp.now()
 ){
     @Exclude

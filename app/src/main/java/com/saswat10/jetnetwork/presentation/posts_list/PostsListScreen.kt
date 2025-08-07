@@ -20,12 +20,12 @@ import com.saswat10.jetnetwork.presentation.feed.FeedItem
 @Composable
 fun PostListScreen(viewModel: PostsListViewModel = hiltViewModel()){
     LaunchedEffect(Unit) { viewModel.initialize() }
-    val posts by viewModel.posts.collectAsStateWithLifecycle(emptyList())
+    val posts by viewModel.postWithLikes.collectAsStateWithLifecycle(emptyList())
 
     Column(modifier = Modifier.fillMaxSize().systemBarsPadding().padding(10.dp)) {
         LazyColumn {
-            items(posts, key = {it.id}){postItem ->
-                FeedItem(postItem, {}, {}, {})
+            items(posts, key = {it.post.id}){postItem ->
+                FeedItem(postItem, {}, {viewModel.toggleLike(postItem.post.id)}, {})
                 Spacer(Modifier.height(10.dp))
             }
         }

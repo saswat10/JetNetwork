@@ -7,11 +7,13 @@ import com.google.firebase.firestore.toObject
 import com.saswat10.jetnetwork.domain.models.Post
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.PostRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PostRepositoryImpl @Inject constructor(
     private val authRepository: AuthRepository
 ): PostRepository {
