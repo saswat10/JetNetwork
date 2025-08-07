@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.presentation.auth.AuthenticationButton
+import com.saswat10.jetnetwork.presentation.auth.launchCredentialManagerBottomSheet
 
 @Composable
 fun RegisterScreen(modifier : Modifier,viewModel: RegisterViewModel = hiltViewModel()) {
@@ -37,11 +39,11 @@ fun RegisterScreen(modifier : Modifier,viewModel: RegisterViewModel = hiltViewMo
     val password = viewModel.password.collectAsStateWithLifecycle()
     val confirmPassword = viewModel.confirmPassword.collectAsStateWithLifecycle()
 
-//    LaunchedEffect(Unit) {
-//        launchCredentialManagerBottomSheet(context = context) { credential ->
-//            viewModel.onSignInWithGoogle(credential)
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        launchCredentialManagerBottomSheet(context = context) { credential ->
+            viewModel.onSignInWithGoogle(credential)
+        }
+    }
 
     Box(
         modifier = Modifier

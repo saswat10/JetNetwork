@@ -5,5 +5,8 @@ data class User(
     val email: String = "",
     val provider: String = "",
     val displayName: String = "",
-    val isAnonymous: Boolean = true
+    val photoUrl: String = "",
+    val isAnonymous: Boolean = true,
+    val joined: Long = 0L, // in millis
+    val lastSignIn: Long = 0L // in millis
 )

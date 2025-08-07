@@ -1,7 +1,9 @@
 package com.saswat10.jetnetwork.di
 
 import com.saswat10.jetnetwork.data.AuthRepositoryImpl
-import com.saswat10.jetnetwork.domain.AuthRepository
+import com.saswat10.jetnetwork.data.PostRepositoryImpl
+import com.saswat10.jetnetwork.domain.repository.AuthRepository
+import com.saswat10.jetnetwork.domain.repository.PostRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,11 +14,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindsAuthRepository(
-        implementation: AuthRepositoryImpl,
-    ): AuthRepository
+    @Binds abstract fun bindsAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 
+    @Binds abstract fun bindsPostRepository(impl: PostRepositoryImpl): PostRepository
 }
 

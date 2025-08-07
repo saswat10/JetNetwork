@@ -1,6 +1,7 @@
 package com.saswat10.jetnetwork.data
 
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -8,7 +9,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
-import com.saswat10.jetnetwork.domain.AuthRepository
+import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.models.User
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,12 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
     override val currentUserId: String
         get() = Firebase.auth.currentUser?.uid.orEmpty()
 
+    override val currentUserName: String
+        get() = Firebase.auth.currentUser?.displayName.orEmpty()
+
+    override val currentPhotoUrl: String
+        get() = Firebase.auth.currentUser?.photoUrl.toString().orEmpty()
+
     override fun hasUser(): Boolean {
         return Firebase.auth.currentUser != null
     }
@@ -39,7 +46,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     override suspend fun updateDisplayName(newDisplayName: String) {
         val profileUpdates = userProfileChangeRequest {
-            UserProfileChangeRequest.Builder.setDisplayName = newDisplayName
+            UserProfileChangeRequest.Builder().displayName = newDisplayName
         }
 
         Firebase.auth.currentUser!!.updateProfile(profileUpdates).await()
@@ -81,8 +88,11 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
             id = this.uid,
             email = this.email ?: "",
             provider = this.providerId,
+            photoUrl = this.photoUrl?.toString().orEmpty(),
             displayName = this.displayName ?: "",
-            isAnonymous = this.isAnonymous
+            isAnonymous = this.isAnonymous,
+            joined = this.metadata?.creationTimestamp?:0L,
+            lastSignIn = this.metadata?.lastSignInTimestamp?:0L
         )
     }
 }

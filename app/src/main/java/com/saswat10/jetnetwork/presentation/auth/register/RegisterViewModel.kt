@@ -6,7 +6,7 @@ import androidx.credentials.CustomCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.saswat10.jetnetwork.JNViewModel
-import com.saswat10.jetnetwork.domain.AuthRepository
+import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.presentation.auth.isValidEmail
 import com.saswat10.jetnetwork.presentation.auth.isValidPassword
 import com.saswat10.jetnetwork.utils.INVALID_EMAIL

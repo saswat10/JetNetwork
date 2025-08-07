@@ -1,11 +1,11 @@
 package com.saswat10.jetnetwork.presentation.auth
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,16 +29,17 @@ fun AuthenticationButton(buttonText: Int, onRequestResult: (Credential) -> Unit)
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    Button(
+    OutlinedButton(
         onClick = {
             coroutineScope.launch {
                 launchCredentialManagerButtonUI(context, onRequestResult)
             }
-        }, modifier = Modifier
+        },
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, 10.dp)
+            .padding(16.dp, 10.dp),
     ) {
-        Icon(painter = painterResource(R.drawable.ic_google), contentDescription = "Google Logo")
+        Image(painter = painterResource(R.drawable.ic_google), contentDescription = "Google Logo")
         Spacer(modifier = Modifier.padding(4.dp))
         Text(text = stringResource(buttonText))
     }
@@ -48,7 +49,7 @@ fun AuthenticationButton(buttonText: Int, onRequestResult: (Credential) -> Unit)
 private suspend fun launchCredentialManagerButtonUI(
     context: Context,
     onRequestResult: (Credential) -> Unit
-){
+) {
     try {
         val signInWithGoogleOption = GetSignInWithGoogleOption
             .Builder(serverClientId = context.getString(R.string.default_web_client_id))
@@ -67,9 +68,9 @@ private suspend fun launchCredentialManagerButtonUI(
             )
 
         onRequestResult(result.credential)
-    }catch (e: NoCredentialException){
+    } catch (e: NoCredentialException) {
         // add code TODO
-    }catch (e: GetCredentialException){
+    } catch (e: GetCredentialException) {
         // add code TODO
     }
 }
@@ -78,7 +79,7 @@ suspend fun launchCredentialManagerBottomSheet(
     context: Context,
     hasFilter: Boolean = true,
     onRequestResult: (Credential) -> Unit
-){
+) {
 
     try {
         val googleIdOption = GetGoogleIdOption.Builder()
@@ -99,7 +100,7 @@ suspend fun launchCredentialManagerBottomSheet(
             )
 
         onRequestResult(result.credential)
-    }catch (e: NoCredentialException){
+    } catch (e: NoCredentialException) {
 
         // add code TODO
         //If the bottom sheet was launched with filter by authorized accounts, we launch it again
@@ -108,7 +109,7 @@ suspend fun launchCredentialManagerBottomSheet(
         if (hasFilter) {
             launchCredentialManagerBottomSheet(context, hasFilter = false, onRequestResult)
         }
-    }catch (e: GetCredentialException){
+    } catch (e: GetCredentialException) {
         // add code TODO
     }
 

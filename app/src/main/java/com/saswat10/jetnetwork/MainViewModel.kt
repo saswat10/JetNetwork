@@ -2,7 +2,7 @@ package com.saswat10.jetnetwork
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.saswat10.jetnetwork.domain.AuthRepository
+import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
