@@ -36,8 +36,9 @@ class MainActivity : ComponentActivity() {
             }
             JetNetworkTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
-                    AccountsScreen(modifier = Modifier.padding(padding))
+//                    AccountsScreen(modifier = Modifier.padding(padding))
 //                    LoginScreen(modifier = Modifier.padding(padding))
+                    PostListScreen()
                 }
 
             }

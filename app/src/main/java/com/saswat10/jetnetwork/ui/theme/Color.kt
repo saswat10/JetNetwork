@@ -1,5 +1,6 @@
 package com.saswat10.jetnetwork.ui.theme
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -11,3 +12,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Neutral = Color(0xfff2f2f2)
+
+val Pink = Color(0xFFED2939)
+val BookmarkBlue =  Color(0xFF1E90FF)
