@@ -8,4 +8,16 @@
     <string name="or">or</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="profile_name">Profile Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="update">Update</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_description">This will sign you out of the app.</string>
+    <string name="sign_out_title">Sign out from the app</string>
+    <string name="delete_account">Delete</string>
+    <string name="delete_account_title">Delete Account</string>
+    <string name="delete_account_description">This will delete your account from the app.</string>
+    <string name="account_center">Account Info</string>
+    <string name="profile_email">Email</string>
+    <string name="authenticate">Authenticate</string>
 </resources>

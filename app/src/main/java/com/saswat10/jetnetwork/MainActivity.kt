@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import com.saswat10.jetnetwork.presentation.accounts_center.AccountsScreen
 import com.saswat10.jetnetwork.presentation.auth.login.LoginScreen
 import com.saswat10.jetnetwork.presentation.post.Post
 import com.saswat10.jetnetwork.presentation.posts_list.PostListScreen
@@ -35,8 +36,10 @@ class MainActivity : ComponentActivity() {
             }
             JetNetworkTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
-                    Post(noteId = DEFAULT_POST_ID, modifier = Modifier.padding(padding))
+                    AccountsScreen(modifier = Modifier.padding(padding))
+//                    LoginScreen(modifier = Modifier.padding(padding))
                 }
+
             }
         }
 

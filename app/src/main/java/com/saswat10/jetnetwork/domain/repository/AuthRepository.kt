@@ -1,5 +1,6 @@
 package com.saswat10.jetnetwork.domain.repository
 
+import android.net.Uri
 import com.saswat10.jetnetwork.domain.models.User
 import kotlinx.coroutines.flow.Flow
 
@@ -11,6 +12,7 @@ interface AuthRepository {
     fun hasUser(): Boolean
     fun getUserProfile(): User
     suspend fun updateDisplayName(newDisplayName: String)
+    suspend fun updateProfilePic(profilePic: Uri)
     suspend fun createAnonymousAccount()
     suspend fun linkAccountWithGoogle(idToken: String)
     suspend fun linkAccountWithEmail(email: String, password: String)

@@ -1,5 +1,6 @@
 package com.saswat10.jetnetwork.data
 
+import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.EmailAuthProvider
@@ -46,7 +47,15 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     override suspend fun updateDisplayName(newDisplayName: String) {
         val profileUpdates = userProfileChangeRequest {
-            UserProfileChangeRequest.Builder().displayName = newDisplayName
+            this.displayName = newDisplayName
+        }
+
+        Firebase.auth.currentUser!!.updateProfile(profileUpdates).await()
+    }
+
+    override suspend fun updateProfilePic(profilePic: Uri) {
+        val profileUpdates = userProfileChangeRequest {
+            UserProfileChangeRequest.Builder().photoUri = profilePic
         }
 
         Firebase.auth.currentUser!!.updateProfile(profileUpdates).await()
