@@ -17,12 +17,12 @@ class PostViewModel @Inject constructor(
     private val postRepository: PostRepository
 ): JNViewModel() {
 
-    private val _post = MutableStateFlow(DEFAULT_POST)
+    private val _post = MutableStateFlow(Post(DEFAULT_POST_ID))
     val post: StateFlow<Post> = _post.asStateFlow()
 
     fun initialize(postId: String){
         launchCatching {
-            _post.value = postRepository.readPost(postId) ?: DEFAULT_POST
+            _post.value = postRepository.readPost(postId) ?: Post(DEFAULT_POST_ID)
         }
     }
 
@@ -42,17 +42,17 @@ class PostViewModel @Inject constructor(
         _post.value = _post.value.copy(content = newContent)
     }
 
-    fun savePost(){
+    fun savePost(popUpScreen: ()->Unit){
         launchCatching {
             if(_post.value.id == DEFAULT_POST_ID){
                 postRepository.createPost(_post.value)
+                _post.value = Post(DEFAULT_POST_ID)
             }else{
                 postRepository.updatePost(_post.value)
+                _post.value = Post(DEFAULT_POST_ID)
             }
         }
+        popUpScreen()
     }
 
-    companion object {
-        private val DEFAULT_POST = Post("ffEkch9NSYiaiB5IoOpH\n")
-    }
 }

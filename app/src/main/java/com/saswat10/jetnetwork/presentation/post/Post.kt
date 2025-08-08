@@ -1,6 +1,5 @@
 package com.saswat10.jetnetwork.presentation.post
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,11 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,10 +18,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,20 +35,29 @@ import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
 @Composable
-fun Post(noteId: String, modifier: Modifier, viewModel: PostViewModel = hiltViewModel()) {
+fun Post(
+    postId: String,
+    modifier: Modifier,
+    viewModel: PostViewModel = hiltViewModel(),
+    popUpScreen: () -> Unit
+) {
 
     val post by viewModel.post.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {viewModel.initialize(noteId)}
+    LaunchedEffect(Unit) {
+        viewModel.initialize(postId)
+    }
 
-    Box(modifier = modifier
-        .fillMaxSize()
-        .imePadding()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
         LazyColumn(modifier = modifier.imePadding()) {
             item {
                 OutlinedTextField(
                     value = post.title,
-                    onValueChange = {viewModel.updateTitle(it)},
+                    onValueChange = { viewModel.updateTitle(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp, 2.dp),
@@ -78,7 +80,7 @@ fun Post(noteId: String, modifier: Modifier, viewModel: PostViewModel = hiltView
 
                 OutlinedTextField(
                     value = post.content,
-                    onValueChange = {viewModel.updateContent(it)},
+                    onValueChange = { viewModel.updateContent(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp, 2.dp),
@@ -101,9 +103,11 @@ fun Post(noteId: String, modifier: Modifier, viewModel: PostViewModel = hiltView
             }
 
         }
-        Surface(Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter)) {
+        Surface(
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
             Row(
                 modifier = Modifier.padding(24.dp, 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -113,7 +117,7 @@ fun Post(noteId: String, modifier: Modifier, viewModel: PostViewModel = hiltView
                     Icon(painterResource(R.drawable.add_photo), "Add Photos", Modifier.size(30.dp))
                     Icon(painterResource(R.drawable.add_video), "Add Video", Modifier.size(30.dp))
                 }
-                Button(onClick = {viewModel.savePost()}) {
+                Button(onClick = { viewModel.savePost(popUpScreen) }) {
                     Text("Post")
                 }
             }
@@ -122,9 +126,9 @@ fun Post(noteId: String, modifier: Modifier, viewModel: PostViewModel = hiltView
     }
 }
 
-@Preview(apiLevel = 34)
-@Composable
-fun PostPreview() {
-
-    Post(noteId= DEFAULT_POST_ID, modifier = Modifier.fillMaxSize())
-}
+//@Preview(apiLevel = 34)
+//@Composable
+//fun PostPreview() {
+//
+//    Post(postId = DEFAULT_POST_ID, modifier = Modifier.fillMaxSize())
+//}

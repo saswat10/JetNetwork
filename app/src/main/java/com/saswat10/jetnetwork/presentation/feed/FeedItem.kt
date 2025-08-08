@@ -39,16 +39,17 @@ import com.saswat10.jetnetwork.utils.formattedTime
 @Composable
 fun FeedItem(
     postWithLikes: PostWithLikes,
-    getComments: ()->Unit,
+    getComments: () -> Unit,
     toggleLike: () -> Unit,
-    toggleBookMark: () -> Unit // TODO
+    toggleBookMark: () -> Unit, // TODO
+    modifier: Modifier
 ) {
 
     val feed = postWithLikes.post
     val isLiked = postWithLikes.isLiked
     val animatedIsLiked: Color by animateColorAsState(if(isLiked) Pink else Color.Gray, label="color", animationSpec = tween(easing = Ease, durationMillis = 200))
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.Top,

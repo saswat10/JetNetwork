@@ -1,23 +1,30 @@
 package com.saswat10.jetnetwork.presentation.feed
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saswat10.jetnetwork.PostScreen
+import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
 @Composable
-fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
+fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen:(Any)->Unit) {
     LaunchedEffect(Unit) { viewModel.initialize() }
     val posts by viewModel.postWithLikes.collectAsStateWithLifecycle(emptyList())
     val comments by viewModel.comments.collectAsStateWithLifecycle(emptyList())
@@ -25,27 +32,35 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     val showEditCommentDialog by viewModel.showDialog.collectAsStateWithLifecycle()
     val comment by viewModel.comment.collectAsStateWithLifecycle()
 
-    Column(
+    // TODO: Add edit post in the feed item
+    // TODO: Also add delete post in the feed item
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding()
             .padding(10.dp)
     ) {
         LazyColumn {
             items(posts, key = { it.post.id }) { postItem ->
                 FeedItem(
-                    postItem,
+                    modifier = Modifier.animateItem(),
+                    postWithLikes = postItem,
                     getComments = {
                         viewModel.showModalSheet()
                         viewModel.getComments(postItem.post.id)
                     },
                     toggleLike = { viewModel.toggleLike(postItem.post.id) },
-                    {})
+                    toggleBookMark = {}
+                )
                 Spacer(Modifier.height(10.dp))
             }
         }
-    }
 
+        FloatingActionButton(containerColor = MaterialTheme.colorScheme.primary, onClick = {
+            openScreen(PostScreen(DEFAULT_POST_ID))
+        }, modifier = Modifier.align(Alignment.BottomEnd).padding(4.dp)) {
+            Icon(Icons.Default.Add, "Add")
+        }
+    }
     if (showBottomSheet) {
         CommentBottomSheet(
             addComment = {viewModel.addComment(it)},

@@ -113,6 +113,7 @@ fun CommentBottomSheet(
         LazyColumn {
             items(comments, key = { it.id }) { comment ->
                 CommentCard(
+                    modifier = Modifier.animateItem(),
                     comment,
                     currentUserId,
                     onDelete = { onDelete(comment.id) },
@@ -128,13 +129,14 @@ fun CommentBottomSheet(
 // TODO : add delete and update comment for matching userid
 @Composable
 fun CommentCard(
+    modifier: Modifier,
     comment: Comment,
     currentUserId: String,
     onDelete: () -> Unit,
     showEditDialog: () -> Unit
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp, 4.dp, 16.dp, 6.dp)
     ) {

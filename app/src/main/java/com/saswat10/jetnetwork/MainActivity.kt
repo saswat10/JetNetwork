@@ -6,13 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import com.saswat10.jetnetwork.presentation.feed.FeedScreen
-import com.saswat10.jetnetwork.ui.theme.JetNetworkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,16 +22,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(true) {
                 mainViewModel.onAppStart()
             }
-            JetNetworkTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
-//                    AccountsScreen(modifier = Modifier.padding(padding))
-//                    LoginScreen(modifier = Modifier.padding(padding))
-                    FeedScreen()
-                }
-
-            }
+            JNApp()
         }
-
     }
-
 }
