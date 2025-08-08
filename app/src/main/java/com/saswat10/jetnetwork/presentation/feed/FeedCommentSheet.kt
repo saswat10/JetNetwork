@@ -50,7 +50,7 @@ class FeedCommentSheet {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentBottomSheetIcon(
-//    addComment: (String) -> Unit,
+    addComment: (String) -> Unit,
     getComments: ()->Unit,
     comments: List<Comment>
 ) {
@@ -79,7 +79,6 @@ fun CommentBottomSheetIcon(
             sheetState = sheetState,
             onDismissRequest = { showbottomSheet = false }
         ) {
-
             Text(
                 text = "Comments", modifier = Modifier
                     .fillMaxWidth()
@@ -108,14 +107,13 @@ fun CommentBottomSheetIcon(
                 shape = CircleShape,
                 trailingIcon = {
                     FilledIconButton(onClick = {
-                        //TODO: add comment logic
+                        addComment(comment)
                     }, modifier = Modifier.padding(4.dp)) {
                         Icon(Icons.AutoMirrored.Filled.Send, "Send")
                     }
                 }
             )
 
-            HorizontalDivider()
 
             LazyColumn {
                 items(comments,key = {it.id}){comment->

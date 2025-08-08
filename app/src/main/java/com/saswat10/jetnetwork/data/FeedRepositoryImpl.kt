@@ -94,11 +94,11 @@ class FeedRepositoryImpl @Inject constructor(
             photoUrl = authRepository.currentPhotoUrl
         )
         Firebase.firestore.runTransaction {
-            it.set(Firebase.firestore
+            val commentRef = Firebase.firestore
                 .collection(POSTS_COLLECTION)
                 .document(comment.postId)
-                .collection(COMMENTS_SUBCOLLECTION)
-                .document(comment.id), commentWithUserData)
+                .collection(COMMENTS_SUBCOLLECTION).document()
+            it.set(commentRef, commentWithUserData)
             it.update(Firebase.firestore
                 .collection(POSTS_COLLECTION)
                 .document(comment.postId), FIELD_COMMENTS, FieldValue.increment((+1)))

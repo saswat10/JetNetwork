@@ -105,7 +105,7 @@ fun FeedItem(
 
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            CommentBottomSheetIcon(comments = comments, getComments = {getComments()})
+                            CommentBottomSheetIcon(comments = comments, getComments = {getComments()}, addComment = {addComment(it)})
                             Spacer(Modifier.width(4.dp))
                             Text(feed.comments.toString(), style = MaterialTheme.typography.labelLarge, color = Color.Gray)
                         }

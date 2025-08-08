@@ -32,8 +32,8 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
                     postItem,
                     comments,
                     getComments = { viewModel.getComments(postItem.post.id) },
-                    addComment = {},
-                    { viewModel.toggleLike(postItem.post.id) },
+                    addComment = { viewModel.addComment(postItem.post.id, it) },
+                    toggleLike ={ viewModel.toggleLike(postItem.post.id) },
                     {})
                 Spacer(Modifier.height(10.dp))
             }
