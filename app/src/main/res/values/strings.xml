@@ -20,4 +20,5 @@
     <string name="account_center">Account Info</string>
     <string name="profile_email">Email</string>
     <string name="authenticate">Authenticate</string>
+    <string name="update_comment">Update Comment</string>
 </resources>

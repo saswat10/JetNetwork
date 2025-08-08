@@ -1,6 +1,5 @@
 package com.saswat10.jetnetwork.presentation.feed
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Ease
 import androidx.compose.animation.core.tween
@@ -30,11 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
-import com.saswat10.jetnetwork.domain.models.Comment
 import com.saswat10.jetnetwork.ui.theme.Pink
 import com.saswat10.jetnetwork.utils.formatName
 import com.saswat10.jetnetwork.utils.formattedTime
@@ -42,9 +39,7 @@ import com.saswat10.jetnetwork.utils.formattedTime
 @Composable
 fun FeedItem(
     postWithLikes: PostWithLikes,
-    comments: List<Comment>,
     getComments: ()->Unit,
-    addComment: (String) -> Unit, // TODO
     toggleLike: () -> Unit,
     toggleBookMark: () -> Unit // TODO
 ) {
@@ -61,7 +56,7 @@ fun FeedItem(
             modifier = Modifier.padding(6.dp, 10.dp, 6.dp, 4.dp).fillMaxWidth()
         ) {
             Icon(Icons.Default.AccountCircle, null, Modifier.size(30.dp))
-            Column{
+            Column(){
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically) {
                     Text(formatName(feed.username), style = MaterialTheme.typography.labelLarge)
@@ -105,7 +100,16 @@ fun FeedItem(
 
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            CommentBottomSheetIcon(comments = comments, getComments = {getComments()}, addComment = {addComment(it)})
+                            Icon(
+                                painter = painterResource(R.drawable.comment_24px),
+                                "Comment",
+                                modifier = Modifier
+                                    .size(26.dp)
+                                    .clip(CircleShape)
+                                    .clickable {getComments()}
+                                    .padding(4.dp),
+                                tint = Color.Gray
+                            )
                             Spacer(Modifier.width(4.dp))
                             Text(feed.comments.toString(), style = MaterialTheme.typography.labelLarge, color = Color.Gray)
                         }

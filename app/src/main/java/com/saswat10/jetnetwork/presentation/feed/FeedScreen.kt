@@ -21,23 +21,52 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) { viewModel.initialize() }
     val posts by viewModel.postWithLikes.collectAsStateWithLifecycle(emptyList())
     val comments by viewModel.comments.collectAsStateWithLifecycle(emptyList())
+    val showBottomSheet by viewModel.showModalSheet.collectAsStateWithLifecycle()
+    val showEditCommentDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+    val comment by viewModel.comment.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .systemBarsPadding()
-        .padding(10.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .padding(10.dp)
+    ) {
         LazyColumn {
             items(posts, key = { it.post.id }) { postItem ->
                 FeedItem(
                     postItem,
-                    comments,
-                    getComments = { viewModel.getComments(postItem.post.id) },
-                    addComment = { viewModel.addComment(postItem.post.id, it) },
-                    toggleLike ={ viewModel.toggleLike(postItem.post.id) },
+                    getComments = {
+                        viewModel.showModalSheet()
+                        viewModel.getComments(postItem.post.id)
+                    },
+                    toggleLike = { viewModel.toggleLike(postItem.post.id) },
                     {})
                 Spacer(Modifier.height(10.dp))
             }
         }
+    }
+
+    if (showBottomSheet) {
+        CommentBottomSheet(
+            addComment = {viewModel.addComment(it)},
+            onDismiss = { viewModel.onDismiss() },
+            comments = comments,
+            currentUserId = viewModel.currentUserId,
+            onDelete = {viewModel.deleteComment(it)},
+            showEditDialog = {commentId ->
+                viewModel.getComment(commentId)
+                viewModel.showEditDialog()
+            }
+        )
+    }
+
+    if(showEditCommentDialog){
+        EditCommentDialog(
+            onDismiss = {viewModel.onDismissDialog()},
+            value = comment.comment,
+            updateValue = {viewModel.updateComment(it)},
+            confirmButton = {viewModel.updateCommentClick()}
+        )
     }
 }
 

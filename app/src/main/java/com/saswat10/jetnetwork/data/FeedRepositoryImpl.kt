@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
 import com.saswat10.jetnetwork.domain.models.Comment
 import com.saswat10.jetnetwork.domain.models.Post
@@ -85,6 +86,20 @@ class FeedRepositoryImpl @Inject constructor(
                 .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
                 .dataObjects<Comment>()
         }
+    }
+
+    override suspend fun getComment(
+        postId: String,
+        commentId: String
+    ): Comment? {
+        return Firebase.firestore
+            .collection(POSTS_COLLECTION)
+            .document(postId)
+            .collection(COMMENTS_SUBCOLLECTION)
+            .document(commentId)
+            .get()
+            .await()
+            .toObject()
     }
 
     override suspend fun createComment(comment: Comment) {

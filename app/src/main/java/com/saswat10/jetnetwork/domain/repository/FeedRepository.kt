@@ -10,6 +10,7 @@ interface FeedRepository {
     val feedItems: Flow<List<PostWithLikes>>
     suspend fun toggleLike(postId: String)
     suspend fun getComments(postId: String): Flow<List<Comment>>
+    suspend fun getComment(postId: String, commentId: String): Comment?
     suspend fun createComment(comment: Comment)
     suspend fun updateComment(comment: Comment)
     suspend fun deleteComment(commentId: String, postId: String)
