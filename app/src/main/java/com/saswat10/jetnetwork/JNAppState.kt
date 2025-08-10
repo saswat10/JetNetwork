@@ -32,6 +32,7 @@ class JNAppState(
     fun navigate(route: Any){
         navController.navigate(route) {
             launchSingleTop = true
+            restoreState =true
         }
     }
 
@@ -39,6 +40,7 @@ class JNAppState(
         navController.navigate(route){
             launchSingleTop = true
             popUpTo(popUp){inclusive = true}
+            restoreState = true
         }
     }
 
@@ -46,6 +48,7 @@ class JNAppState(
         navController.navigate(route){
             launchSingleTop = true
             popUpTo(0) {inclusive = true}
+            restoreState = true
         }
     }
 

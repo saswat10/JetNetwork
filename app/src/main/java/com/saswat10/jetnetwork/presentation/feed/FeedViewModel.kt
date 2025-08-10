@@ -1,17 +1,27 @@
 package com.saswat10.jetnetwork.presentation.feed
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.saswat10.jetnetwork.JNViewModel
+import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
 import com.saswat10.jetnetwork.domain.models.Comment
+import com.saswat10.jetnetwork.domain.models.Post
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.FeedRepository
 import com.saswat10.jetnetwork.domain.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
@@ -20,7 +30,11 @@ class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository
 ) : JNViewModel() {
 
-    val postWithLikes = feedRepository.feedItems
+    val postWithLikes = feedRepository.feedItems.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(10_000),
+        initialValue = emptyList()
+    )
     val currentUserId = authRepository.currentUserId
     private val _comments = MutableStateFlow<List<Comment>>(emptyList())
     val comments: StateFlow<List<Comment>> = _comments.asStateFlow()

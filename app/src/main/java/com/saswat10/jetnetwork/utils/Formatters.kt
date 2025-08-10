@@ -8,24 +8,14 @@ private const val MINUTE = 60
 private const val HOUR = 3600
 private const val DAY = 86400
 private const val WEEK = 604800
-private const val MONTH = 2629743
-private const val YEAR = 31556926
+private const val MONTH = 2678400
+private const val YEAR = 31536000
 
 fun formattedTime(timestamp: Timestamp): String {
     val now = Timestamp.now().seconds
     val seconds = (now - timestamp.seconds)
 
-    return when {
-        seconds < MINUTE -> "Just now"
-        seconds < 2 * MINUTE -> "a minute ago"
-        seconds < 50 * MINUTE -> "${seconds / MINUTE} minutes ago"
-        seconds < 90 * MINUTE -> "an hour ago"
-        seconds < 24 * HOUR -> "${seconds / HOUR} hours ago"
-        seconds < 48 * HOUR -> "yesterday"
-        seconds < 30 * DAY -> "${seconds / DAY} days ago"
-        seconds < 12 * MONTH -> "${seconds / MONTH} months ago"
-        else -> "a long time ago"
-    }
+    return parseDateTime(seconds)
 }
 
 fun formattedTime(timeInMillis: Long): String {
@@ -33,16 +23,20 @@ fun formattedTime(timeInMillis: Long): String {
     val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(timeInMillis)
     val seconds = (now - timeInSeconds)
 
+    return parseDateTime(seconds)
+}
+
+
+private fun parseDateTime(seconds: Long): String{
     return when {
-        seconds < MINUTE -> "Just now"
-        seconds < 2 * MINUTE -> "a minute ago"
-        seconds < 50 * MINUTE -> "${seconds / MINUTE} minutes ago"
-        seconds < 90 * MINUTE -> "an hour ago"
-        seconds < 24 * HOUR -> "${seconds / HOUR} hours ago"
-        seconds < 48 * HOUR -> "yesterday"
-        seconds < 30 * DAY -> "${seconds / DAY} days ago"
-        seconds < 12 * MONTH -> "${seconds / MONTH} months ago"
-        else -> "a long time ago"
+        seconds > YEAR -> "${seconds/YEAR}y ago"
+        seconds > MONTH -> "${seconds/MONTH}m ago"
+        seconds > WEEK -> "${seconds/WEEK}w ago"
+        seconds > DAY -> "${seconds/DAY}d ago"
+        seconds > HOUR -> "${seconds/HOUR}hr ago"
+        seconds > MINUTE -> "${seconds/MINUTE}min ago"
+        seconds > SECOND -> "${seconds/SECOND}s ago"
+        else -> "Just Now"
     }
 }
 

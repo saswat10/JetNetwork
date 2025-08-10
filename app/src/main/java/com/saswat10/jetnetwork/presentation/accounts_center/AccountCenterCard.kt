@@ -42,6 +42,7 @@ fun DisplayNameCard(displayName: String, onUpdateDisplayNameClick: (String) -> U
         showDisplayNameDialog = true
     }
 
+
     if (showDisplayNameDialog) {
         AlertDialog(
             title = { Text(stringResource(R.string.profile_name)) },

@@ -24,6 +24,12 @@ class AccountsViewModel @Inject constructor(
         }
     }
 
+    fun getUserProfileOnRefresh(){
+        launchCatching {
+                _user.value = authRepository.getUserProfile()
+        }
+    }
+
     fun onUpdateDisplayNameClick(newDisplayName: String){
         launchCatching {
             authRepository.updateDisplayName(newDisplayName)

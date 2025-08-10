@@ -1,6 +1,7 @@
 package com.saswat10.jetnetwork.data
 
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
@@ -27,7 +28,7 @@ class PostRepositoryImpl @Inject constructor(
 
 
     override suspend fun createPost(post: Post) {
-        val postWithUserData = post.copy(userId = authRepository.currentUserId, username = authRepository.currentUserName, photoUrl = authRepository.currentPhotoUrl)
+        val postWithUserData = post.copy(userId = authRepository.currentUserId, username = authRepository.currentUserName, photoUrl = authRepository.currentPhotoUrl, createdAt = Timestamp.now())
         Firebase.firestore
             .collection(POSTS_COLLECTION)
             .add(postWithUserData).await()

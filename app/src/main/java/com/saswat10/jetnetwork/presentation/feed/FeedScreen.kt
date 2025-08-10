@@ -7,22 +7,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.PostScreen
 import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen:(Any)->Unit) {
     LaunchedEffect(Unit) { viewModel.initialize() }
@@ -32,17 +39,31 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen:(Any)->Uni
     val showEditCommentDialog by viewModel.showDialog.collectAsStateWithLifecycle()
     val comment by viewModel.comment.collectAsStateWithLifecycle()
 
+    val scrollstate = rememberLazyListState(    )
+
     // TODO: Add edit post in the feed item
     // TODO: Also add delete post in the feed item
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
     ) {
-        LazyColumn {
+        LazyColumn(
+            userScrollEnabled = true,
+            state = scrollstate
+        ) {
+            item {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text="Feed",
+                            style = MaterialTheme.typography.displaySmall
+                        )
+                    }
+                )
+            }
             items(posts, key = { it.post.id }) { postItem ->
                 FeedItem(
-                    modifier = Modifier.animateItem(),
+                    modifier = Modifier.animateItem().padding(horizontal = 10.dp),
                     postWithLikes = postItem,
                     getComments = {
                         viewModel.showModalSheet()
@@ -53,14 +74,15 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen:(Any)->Uni
                 )
                 Spacer(Modifier.height(10.dp))
             }
+
+            item { Spacer(Modifier.height(60.dp)) }
         }
 
-        FloatingActionButton(containerColor = MaterialTheme.colorScheme.primary, onClick = {
+        FloatingActionButton( onClick = {
             openScreen(PostScreen(DEFAULT_POST_ID))
-        }, modifier = Modifier.align(Alignment.BottomEnd).padding(4.dp)) {
+        }, modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 20.dp)) {
             Icon(Icons.Default.Add, "Add")
-        }
-    }
+        }}
     if (showBottomSheet) {
         CommentBottomSheet(
             addComment = {viewModel.addComment(it)},

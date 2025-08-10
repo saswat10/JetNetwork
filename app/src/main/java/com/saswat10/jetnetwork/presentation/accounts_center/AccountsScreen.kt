@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,23 +24,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saswat10.jetnetwork.LoginScreen
 import com.saswat10.jetnetwork.R
-import com.saswat10.jetnetwork.domain.models.User
 import com.saswat10.jetnetwork.utils.formattedTime
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AccountsScreen(
     modifier: Modifier,
+    openScreen: (Any) -> Unit,
     viewModel: AccountsViewModel = hiltViewModel()
 ) {
 
     val user by viewModel.user.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { user }
-
+    LaunchedEffect(Unit) { viewModel.getUserProfileOnRefresh() }
     Scaffold {
         Column(
             modifier = modifier
@@ -49,22 +47,33 @@ fun AccountsScreen(
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopAppBar(title = { Text(stringResource(R.string.account_center)) })
+            TopAppBar(title = {
+                Text(
+                    stringResource(R.string.account_center),
+                    style = MaterialTheme.typography.displaySmall
+                )
+            })
 
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            )
 
             DisplayNameCard(user.displayName) { viewModel.onUpdateDisplayNameClick(it) }
 
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            )
 
             Card(modifier = Modifier.card()) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                ) {
                     if (!user.isAnonymous) {
                         Text(
                             text = String.format(user.email),
@@ -77,17 +86,28 @@ fun AccountsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            )
 
             if (user.isAnonymous) {
-                AccountCenterCard(stringResource(R.string.authenticate), Icons.Filled.AccountCircle, Modifier.card()) {
+                AccountCenterCard(
+                    stringResource(R.string.authenticate),
+                    Icons.Filled.AccountCircle,
+                    Modifier.card()
+                ) {
+                    openScreen(LoginScreen)
                 }
             } else {
                 ExitAppCard { viewModel.onSignOutClick() }
                 RemoveAccountCard { viewModel.onDeleteAccount() }
-                Text("Last Sign in: "+formattedTime(user.lastSignIn)+" | "+ "Joined " +formattedTime(user.joined), color = Color.Gray, style = MaterialTheme.typography.labelLarge)
+                Text(
+                    "Last Sign in: " + formattedTime(user.lastSignIn) + " | " + "Joined " + formattedTime(
+                        user.joined
+                    ), color = Color.Gray, style = MaterialTheme.typography.labelLarge
+                )
             }
         }
     }

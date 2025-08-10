@@ -1,20 +1,30 @@
 package com.saswat10.jetnetwork
 
-import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.saswat10.jetnetwork.presentation.accounts_center.AccountsScreen
@@ -23,6 +33,7 @@ import com.saswat10.jetnetwork.presentation.auth.register.RegisterScreen
 import com.saswat10.jetnetwork.presentation.feed.FeedScreen
 import com.saswat10.jetnetwork.presentation.post.Post
 import com.saswat10.jetnetwork.ui.theme.JetNetworkTheme
+import com.saswat10.jetnetwork.utils.NavDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 
@@ -30,12 +41,48 @@ import kotlinx.serialization.Serializable
 @Composable
 fun JNApp() {
     JetNetworkTheme {
-        Surface(color = MaterialTheme.colorScheme.background){
+        Surface(color = MaterialTheme.colorScheme.background) {
             val snackbarHostState = remember { SnackbarHostState() }
             val appState = rememberAppState(snackbarHostState)
 
+            val items = listOf(NavDestination.Feed, NavDestination.Accounts)
+            var selectedIndex by remember { mutableIntStateOf(0) }
+
+            val entry by appState.navController.currentBackStackEntryAsState()
+            val currentDestination = entry?.destination
+
+
+            val shouldShowBottomBar = currentDestination?.let { destination ->
+                items.any { navDestination ->
+                    destination.hasRoute(navDestination.route::class)
+                }
+            } ?: false
+
             Scaffold(
-                snackbarHost = { SnackbarHost(snackbarHostState)}
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                bottomBar = {
+                    AnimatedVisibility(shouldShowBottomBar) {
+                        NavigationBar {
+                            items.forEachIndexed { index, destination ->
+                                NavigationBarItem(
+                                    icon = { Icon(destination.icon, null) },
+                                    label = { Text(destination.title) },
+                                    selected = index == selectedIndex,
+                                    onClick = {
+                                        selectedIndex = index
+                                        appState.navController.navigate(destination.route) {
+                                            popUpTo(appState.navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             ) { paddingValues ->
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
@@ -61,8 +108,8 @@ fun rememberAppState(
     }
 }
 
-fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState){
-    composable<FeedScreen>{
+fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
+    composable<FeedScreen> {
         FeedScreen(
             openScreen = { appState.navigate(it) }
         )
@@ -73,23 +120,24 @@ fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState){
         Post(
             postId = args.postId,
             modifier = Modifier,
-            popUpScreen = {appState.popUp()}
+            popUpScreen = { appState.popUp() }
         )
     }
 
     composable<AccountsScreen> {
-        AccountsScreen(modifier = Modifier)
+        AccountsScreen(modifier = Modifier, openScreen = {appState.navigate(it)})
     }
 
     composable<LoginScreen> {
-        LoginScreen(modifier = Modifier)
+        LoginScreen(modifier = Modifier, openAndPopUp = {screen1, screen2->
+            appState.navigateAndPopUp(screen1, screen2)
+        })
     }
 
     composable<RegisterScreen> {
         RegisterScreen(modifier = Modifier)
     }
 }
-
 
 
 @Serializable
