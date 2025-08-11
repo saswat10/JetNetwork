@@ -1,6 +1,9 @@
 package com.saswat10.jetnetwork.utils
 
 import com.google.firebase.Timestamp
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 private const val SECOND = 1
@@ -37,6 +40,28 @@ private fun parseDateTime(seconds: Long): String{
         seconds > MINUTE -> "${seconds/MINUTE}min ago"
         seconds > SECOND -> "${seconds/SECOND}s ago"
         else -> "Just Now"
+    }
+}
+
+fun localTimeString(timestamp: Timestamp): String {
+    val formatter = DateTimeFormatter.ofPattern("hh:mm a")
+    return timestamp.toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalTime()
+        .format(formatter)
+}
+
+fun formatChatDate(timestamp: Timestamp): String {
+    val date = timestamp.toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+    val today = LocalDate.now()
+    val yesterday = today.minusDays(1)
+
+    return when (date) {
+        today -> "Today"
+        yesterday -> "Yesterday"
+        else -> date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
     }
 }
 

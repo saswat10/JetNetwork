@@ -9,11 +9,13 @@ interface ChatRepository {
 
     val conversationList: Flow<List<Conversation>>
 
-    suspend fun createChatUser(user: User)
-    suspend fun getUsers(searchQuery: String): Flow<List<User>>
+    suspend fun createChatUser()
+    suspend fun getUsers(searchQuery: String): List<User>
     suspend fun createNewConversation(targetUser: User): Conversation?
+    suspend fun conversationExists(targetUser: User): Boolean
+    suspend fun getConversation(targetUser: User): Conversation
     suspend fun loadConversation(conversationId: String): Flow<List<Message>>
-    suspend fun sendMessage(conversation: Conversation, message: Message)
+    suspend fun sendMessage(conversationId: String, message: Message)
     suspend fun updateMessage(conversation: Conversation, message: Message)
     suspend fun deleteMessage(conversation: Conversation, message: Message)
 

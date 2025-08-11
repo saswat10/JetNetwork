@@ -1,9 +1,11 @@
 package com.saswat10.jetnetwork.di
 
 import com.saswat10.jetnetwork.data.AuthRepositoryImpl
+import com.saswat10.jetnetwork.data.ChatRepositoryImpl
 import com.saswat10.jetnetwork.data.FeedRepositoryImpl
 import com.saswat10.jetnetwork.data.PostRepositoryImpl
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
+import com.saswat10.jetnetwork.domain.repository.ChatRepository
 import com.saswat10.jetnetwork.domain.repository.FeedRepository
 import com.saswat10.jetnetwork.domain.repository.PostRepository
 import dagger.Binds
@@ -21,5 +23,7 @@ abstract class RepositoryModule {
     @Binds abstract fun bindsPostRepository(impl: PostRepositoryImpl): PostRepository
 
     @Binds abstract fun bindsFeedRepository(impl: FeedRepositoryImpl): FeedRepository
+
+    @Binds abstract fun bindsChatRepository(impl: ChatRepositoryImpl): ChatRepository
 }
 

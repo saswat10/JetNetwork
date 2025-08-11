@@ -163,7 +163,6 @@ fun CommentCard(
                     )
                 }
 
-                Spacer(Modifier.height(6.dp))
                 Text(
                     comment.comment,
                     style = MaterialTheme.typography.bodyMedium,

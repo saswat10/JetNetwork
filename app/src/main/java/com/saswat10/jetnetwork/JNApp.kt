@@ -2,6 +2,7 @@ package com.saswat10.jetnetwork
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
@@ -30,6 +32,7 @@ import androidx.navigation.toRoute
 import com.saswat10.jetnetwork.presentation.accounts_center.AccountsScreen
 import com.saswat10.jetnetwork.presentation.auth.login.LoginScreen
 import com.saswat10.jetnetwork.presentation.auth.register.RegisterScreen
+import com.saswat10.jetnetwork.presentation.chat.chat.ChatScreen
 import com.saswat10.jetnetwork.presentation.chat.chat_list.ChatListScreen
 import com.saswat10.jetnetwork.presentation.feed.FeedScreen
 import com.saswat10.jetnetwork.presentation.post.Post
@@ -39,6 +42,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JNApp() {
     JetNetworkTheme {
@@ -46,7 +50,8 @@ fun JNApp() {
             val snackbarHostState = remember { SnackbarHostState() }
             val appState = rememberAppState(snackbarHostState)
 
-            val items = listOf(NavDestination.Feed, NavDestination.Accounts)
+            val items =
+                listOf(NavDestination.Feed, NavDestination.Conversation, NavDestination.Accounts)
             var selectedIndex by remember { mutableIntStateOf(0) }
 
             val entry by appState.navController.currentBackStackEntryAsState()
@@ -65,7 +70,7 @@ fun JNApp() {
                         NavigationBar {
                             items.forEachIndexed { index, destination ->
                                 NavigationBarItem(
-                                    icon = { Icon(destination.icon, null) },
+                                    icon = { Icon(painterResource(destination.icon), null) },
                                     label = { Text(destination.title) },
                                     selected = index == selectedIndex,
                                     onClick = {
@@ -110,10 +115,10 @@ fun rememberAppState(
 
 fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     composable<FeedScreen> {
-//        FeedScreen(
-//            openScreen = { appState.navigate(it) }
-//        )
-        ChatListScreen()
+        FeedScreen(
+            openScreen = { appState.navigate(it) }
+        )
+
     }
 
     composable<PostScreen> {
@@ -126,17 +131,26 @@ fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     }
 
     composable<AccountsScreen> {
-        AccountsScreen(modifier = Modifier, openScreen = {appState.navigate(it)})
+        AccountsScreen(modifier = Modifier, openScreen = { appState.navigate(it) })
     }
 
     composable<LoginScreen> {
-        LoginScreen(modifier = Modifier, openAndPopUp = {screen1, screen2->
+        LoginScreen(modifier = Modifier, openAndPopUp = { screen1, screen2 ->
             appState.navigateAndPopUp(screen1, screen2)
         })
     }
 
     composable<RegisterScreen> {
         RegisterScreen(modifier = Modifier)
+    }
+
+    composable<ConversationList> {
+        ChatListScreen()
+    }
+
+    composable<ChatList> {
+        val args = it.toRoute<ChatList>()
+        ChatScreen(conversationId = args.conversationId)
     }
 }
 
@@ -146,6 +160,12 @@ object FeedScreen
 
 @Serializable
 object AccountsScreen
+
+@Serializable
+object ConversationList
+
+@Serializable
+data class ChatList(val conversationId: String)
 
 @Serializable
 object LoginScreen

@@ -48,7 +48,6 @@ class JNAppState(
         navController.navigate(route){
             launchSingleTop = true
             popUpTo(0) {inclusive = true}
-            restoreState = true
         }
     }
 
