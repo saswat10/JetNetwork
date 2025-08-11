@@ -30,6 +30,7 @@ import androidx.navigation.toRoute
 import com.saswat10.jetnetwork.presentation.accounts_center.AccountsScreen
 import com.saswat10.jetnetwork.presentation.auth.login.LoginScreen
 import com.saswat10.jetnetwork.presentation.auth.register.RegisterScreen
+import com.saswat10.jetnetwork.presentation.chat.chat_list.ChatListScreen
 import com.saswat10.jetnetwork.presentation.feed.FeedScreen
 import com.saswat10.jetnetwork.presentation.post.Post
 import com.saswat10.jetnetwork.ui.theme.JetNetworkTheme
@@ -109,9 +110,10 @@ fun rememberAppState(
 
 fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     composable<FeedScreen> {
-        FeedScreen(
-            openScreen = { appState.navigate(it) }
-        )
+//        FeedScreen(
+//            openScreen = { appState.navigate(it) }
+//        )
+        ChatListScreen()
     }
 
     composable<PostScreen> {
