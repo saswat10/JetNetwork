@@ -1,7 +1,9 @@
 package com.saswat10.jetnetwork.domain.models
 
+import com.google.firebase.firestore.DocumentId
+
 data class User(
-    val id: String = "",
+    @DocumentId val id: String = "",
     val email: String = "",
     val provider: String = "",
     val displayName: String = "",

@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
 import com.saswat10.jetnetwork.domain.models.Comment
@@ -26,6 +27,7 @@ class FeedRepositoryImpl @Inject constructor(
         get() = authRepository.currentUser.flatMapLatest { user ->
             Firebase.firestore
                 .collection(POSTS_COLLECTION)
+                .whereEqualTo(FIELD_PRIVATE, false)
                 .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
                 .dataObjects<Post>()
         }
@@ -34,12 +36,14 @@ class FeedRepositoryImpl @Inject constructor(
         get() = authRepository.currentUser.flatMapLatest { user ->
             Firebase.firestore
                 .collection(POSTS_COLLECTION)
+                .whereEqualTo(FIELD_PRIVATE, false)
                 .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
-                .dataObjects<Post>()
+                .snapshots()
                 .mapLatest { posts ->
                     posts.map {
+                        val post = it.toObject<Post>()
                         val isLiked = checkLikeStatus(it.id, authRepository.currentUserId)
-                        PostWithLikes(post = it, isLiked = isLiked)
+                        PostWithLikes(post = post, isLiked = isLiked)
                     }
                 }
         }
@@ -121,12 +125,17 @@ class FeedRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateComment(comment: Comment) {
+        val commentWithUserData = comment.copy(
+            userId = authRepository.currentUserId,
+            username = authRepository.currentUserName,
+            photoUrl = authRepository.currentPhotoUrl
+        )
         Firebase.firestore
             .collection(POSTS_COLLECTION)
             .document(comment.postId)
             .collection(COMMENTS_SUBCOLLECTION)
             .document(comment.id)
-            .set(comment).await()
+            .set(commentWithUserData).await()
     }
 
     override suspend fun deleteComment(commentId: String, postId: String) {
@@ -158,6 +167,7 @@ class FeedRepositoryImpl @Inject constructor(
         private const val POSTS_COLLECTION = "posts"
         private const val LIKES_SUBCOLLECTION = "likes"
         private const val COMMENTS_SUBCOLLECTION = "comments"
+        private const val FIELD_PRIVATE = "private"
         private const val FIELD_LIKES = "likes"
         private const val FIELD_COMMENTS = "comments"
         private const val TIMESTAMP = "createdAt"

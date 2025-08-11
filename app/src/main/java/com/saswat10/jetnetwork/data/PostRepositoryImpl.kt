@@ -41,9 +41,10 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updatePost(post: Post) {
+        val postWithUserData = post.copy(userId = authRepository.currentUserId, username = authRepository.currentUserName, photoUrl = authRepository.currentPhotoUrl, createdAt = Timestamp.now())
         Firebase.firestore
             .collection(POSTS_COLLECTION)
-            .document(post.id).set(post).await()
+            .document(postWithUserData.id).set(post).await()
     }
 
     override suspend fun deletePost(postId: String) {

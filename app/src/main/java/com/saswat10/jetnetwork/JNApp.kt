@@ -51,7 +51,6 @@ fun JNApp() {
             val entry by appState.navController.currentBackStackEntryAsState()
             val currentDestination = entry?.destination
 
-
             val shouldShowBottomBar = currentDestination?.let { destination ->
                 items.any { navDestination ->
                     destination.hasRoute(navDestination.route::class)

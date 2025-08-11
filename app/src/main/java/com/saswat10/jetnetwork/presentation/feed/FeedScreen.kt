@@ -80,7 +80,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen:(Any)->Uni
 
         FloatingActionButton( onClick = {
             openScreen(PostScreen(DEFAULT_POST_ID))
-        }, modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 20.dp)) {
+        }, modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 16.dp)) {
             Icon(Icons.Default.Add, "Add")
         }}
     if (showBottomSheet) {

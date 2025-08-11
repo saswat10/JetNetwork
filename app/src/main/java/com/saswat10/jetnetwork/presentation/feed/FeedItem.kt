@@ -65,7 +65,7 @@ fun FeedItem(
                 .fillMaxWidth()
         ) {
             Icon(Icons.Default.AccountCircle, null, Modifier.size(36.dp))
-            Column() {
+            Column(Modifier.padding(top = 4.dp)) {
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(formatName(feed.username), style = MaterialTheme.typography.labelLarge)
                     Text(
