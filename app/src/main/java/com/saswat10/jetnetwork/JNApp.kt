@@ -142,17 +142,35 @@ fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     }
 
     composable<AccountsScreen> {
-        AccountsScreen(modifier = Modifier, openScreen = { appState.navigate(it) })
+        AccountsScreen(
+            modifier = Modifier,
+            openScreen = { appState.navigate(it) },
+            clearAndNavigate = { appState.clearAndNavigate(it) })
     }
 
     composable<LoginScreen> {
-        LoginScreen(modifier = Modifier, openAndPopUp = { screen1, screen2 ->
-            appState.navigateAndPopUp(screen1, screen2)
-        })
+        LoginScreen(
+            modifier = Modifier,
+            openAndPopUp = { screen1, screen2 ->
+                appState.navigateAndPopUp(screen1, screen2)
+            },
+            openScreen = {
+                appState.navigate(it)
+            },
+            clearAndNavigate = {
+                appState.clearAndNavigate(it)
+            })
     }
 
     composable<RegisterScreen> {
-        RegisterScreen(modifier = Modifier)
+        RegisterScreen(
+            modifier = Modifier,
+            openAndPopUp = { screen1, screen2 ->
+                appState.navigateAndPopUp(screen1, screen2)
+            },
+            clearAndNavigate = {
+                appState.clearAndNavigate(it)
+            })
     }
 
     composable<ConversationList> {

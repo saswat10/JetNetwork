@@ -99,7 +99,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
             provider = this.providerId,
             photoUrl = this.photoUrl?.toString().orEmpty(),
             displayName = this.displayName ?: "",
-            isAnonymous = this.isAnonymous,
+            anonymous = this.isAnonymous,
             joined = this.metadata?.creationTimestamp?:0L,
             lastSignIn = this.metadata?.lastSignInTimestamp?:0L
         )

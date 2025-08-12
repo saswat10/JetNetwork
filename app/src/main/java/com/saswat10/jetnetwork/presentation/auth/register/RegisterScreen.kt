@@ -33,7 +33,12 @@ import com.saswat10.jetnetwork.presentation.auth.AuthenticationButton
 import com.saswat10.jetnetwork.presentation.auth.launchCredentialManagerBottomSheet
 
 @Composable
-fun RegisterScreen(modifier : Modifier,viewModel: RegisterViewModel = hiltViewModel()) {
+fun RegisterScreen(
+    modifier: Modifier,
+    viewModel: RegisterViewModel = hiltViewModel(),
+    openAndPopUp: (Any, Any) -> Unit,
+    clearAndNavigate: (Any) -> Unit
+) {
     val context = LocalContext.current
     val email = viewModel.email.collectAsStateWithLifecycle()
     val password = viewModel.password.collectAsStateWithLifecycle()
@@ -41,7 +46,7 @@ fun RegisterScreen(modifier : Modifier,viewModel: RegisterViewModel = hiltViewMo
 
     LaunchedEffect(Unit) {
         launchCredentialManagerBottomSheet(context = context) { credential ->
-            viewModel.onSignInWithGoogle(credential)
+            viewModel.onSignInWithGoogle(credential, clearAndNavigate)
         }
     }
 
@@ -55,54 +60,90 @@ fun RegisterScreen(modifier : Modifier,viewModel: RegisterViewModel = hiltViewMo
         ElevatedCard() {
             Text(
                 text = stringResource(R.string.sign_up_button).uppercase(),
-                modifier = Modifier.fillMaxWidth().padding(16.dp, 10.dp),
-                style = MaterialTheme.typography.displaySmall)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 10.dp),
+                style = MaterialTheme.typography.displaySmall
+            )
 
             HorizontalDivider()
 
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { viewModel.updateEmail(it) },
-                modifier = Modifier.fillMaxWidth().padding(16.dp, 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 10.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "email") },
-                placeholder = { Text(stringResource(R.string.email)) } )
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "email"
+                    )
+                },
+                placeholder = { Text(stringResource(R.string.email)) })
 
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { viewModel.updatePassword(it) },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth().padding(16.dp, 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 10.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "password") },
-                placeholder = { Text(stringResource(R.string.password)) } )
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "password"
+                    )
+                },
+                placeholder = { Text(stringResource(R.string.password)) })
 
             OutlinedTextField(
                 value = confirmPassword.value,
                 onValueChange = { viewModel.updateConfirmPassword(it) },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth().padding(16.dp, 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 10.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "email") },
-                placeholder = { Text(stringResource(R.string.confirm_password)) } )
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "email"
+                    )
+                },
+                placeholder = { Text(stringResource(R.string.confirm_password)) })
 
             Button(
-                onClick = {viewModel.handleRegister()},
-                modifier = Modifier.fillMaxWidth().padding(16.dp, 10.dp),
-            ) { Text(text=stringResource(R.string.sign_up_button)) }
+                onClick = { viewModel.handleRegister(clearAndNavigate) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 10.dp),
+            ) { Text(text = stringResource(R.string.sign_up_button)) }
 
             Text(
                 text = stringResource(R.string.or),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.labelLarge)
+                style = MaterialTheme.typography.labelLarge
+            )
 
             AuthenticationButton(buttonText = R.string.sign_in_google_button) { credential ->
-                viewModel.onSignInWithGoogle(credential)
+                viewModel.onSignInWithGoogle(credential, clearAndNavigate)
             }
         }
     }

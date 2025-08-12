@@ -10,6 +10,7 @@ interface ChatRepository {
     val conversationList: Flow<List<Conversation>>
 
     suspend fun createChatUser()
+    suspend fun getConversationList(): Flow<List<Conversation>>
     suspend fun getUsers(searchQuery: String): List<User>
     suspend fun createNewConversation(targetUser: User): Conversation?
     suspend fun conversationExists(targetUser: User): Boolean

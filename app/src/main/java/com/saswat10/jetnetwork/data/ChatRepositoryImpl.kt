@@ -41,6 +41,14 @@ class ChatRepositoryImpl @Inject constructor(
             .await()
     }
 
+    override suspend fun getConversationList(): Flow<List<Conversation>> {
+        return authRepository.currentUser.flatMapLatest { user ->
+            Firebase.firestore
+                .collection(CONVERSATION_COLLECTION)
+                .whereArrayContains(PARTICIPANT_IDS_FIELD, user?.id!!)
+                .dataObjects()
+        }
+    }
 
     override suspend fun getUsers(searchQuery: String): List<User> {
         val searchQueryLC = searchQuery.lowercase()

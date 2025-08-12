@@ -33,7 +33,7 @@ fun ConversationItem(
     val lastMessage = conversation.lastMessage.content
     val lastMessageSenderId = conversation.lastMessage.senderId
     val isCurrentUserSender = (lastMessageSenderId == currentUserId)
-    val participant = conversation.participants.filter{
+    val participant = conversation.participants.first {
         it.id != currentUserId
     }
 
@@ -42,7 +42,7 @@ fun ConversationItem(
             Icon(Icons.Default.AccountBox, "null", Modifier.size(36.dp))
         },
         headlineContent = {
-            Text(participant[0].displayName)
+            Text(participant.displayName.ifBlank { "Anonymous User" })
         },
         supportingContent = {
             if(isCurrentUserSender){

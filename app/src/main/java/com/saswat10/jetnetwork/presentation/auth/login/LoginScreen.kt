@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.R
+import com.saswat10.jetnetwork.RegisterScreen
 import com.saswat10.jetnetwork.presentation.auth.AuthenticationButton
 import com.saswat10.jetnetwork.presentation.auth.launchCredentialManagerBottomSheet
 
@@ -36,7 +38,9 @@ import com.saswat10.jetnetwork.presentation.auth.launchCredentialManagerBottomSh
 fun LoginScreen(
     modifier: Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
-    openAndPopUp: (Any, Any) -> Unit
+    openAndPopUp: (Any, Any) -> Unit,
+    openScreen: (Any) -> Unit,
+    clearAndNavigate: (Any)->Unit
 ) {
 
     val context = LocalContext.current
@@ -44,7 +48,7 @@ fun LoginScreen(
     val password = viewModel.password.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         launchCredentialManagerBottomSheet(context = context) { credential ->
-            viewModel.onSignInWithGoogle(credential, openAndPopUp)
+            viewModel.onSignInWithGoogle(credential, openAndPopUp, clearAndNavigate)
         }
     }
     Box(
@@ -105,7 +109,7 @@ fun LoginScreen(
                 placeholder = { Text(stringResource(R.string.password)) })
 
             Button(
-                onClick = { viewModel.handleSignIn(openAndPopUp) },
+                onClick = { viewModel.handleSignIn(openAndPopUp, clearAndNavigate) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp, 10.dp),
@@ -120,7 +124,15 @@ fun LoginScreen(
             )
 
             AuthenticationButton(buttonText = R.string.sign_in_google_button) { credential ->
-                viewModel.onSignInWithGoogle(credential, openAndPopUp)
+                viewModel.onSignInWithGoogle(credential, openAndPopUp, clearAndNavigate)
+            }
+
+            HorizontalDivider()
+
+            TextButton(onClick = {
+                openScreen(RegisterScreen)
+            }) {
+                Text("No Account? Sign up")
             }
         }
     }

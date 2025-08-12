@@ -9,7 +9,7 @@ data class User(
     val displayName: String = "",
     val lowerCaseName : String = "",
     val photoUrl: String = "",
-    val isAnonymous: Boolean = true,
     val joined: Long = 0L, // in millis
-    val lastSignIn: Long = 0L // in millis
+    val lastSignIn: Long = 0L, // in millis
+    val anonymous: Boolean = true
 )

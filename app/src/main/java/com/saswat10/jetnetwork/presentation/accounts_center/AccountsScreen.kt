@@ -35,6 +35,7 @@ import com.saswat10.jetnetwork.utils.formattedTime
 fun AccountsScreen(
     modifier: Modifier,
     openScreen: (Any) -> Unit,
+    clearAndNavigate: (Any)->Unit,
     viewModel: AccountsViewModel = hiltViewModel()
 ) {
 
@@ -74,7 +75,7 @@ fun AccountsScreen(
                         .fillMaxWidth()
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                 ) {
-                    if (!user.isAnonymous) {
+                    if (!user.anonymous) {
                         Text(
                             text = String.format(user.email),
                             modifier = Modifier
@@ -92,7 +93,7 @@ fun AccountsScreen(
                     .padding(12.dp)
             )
 
-            if (user.isAnonymous) {
+            if (user.anonymous) {
                 AccountCenterCard(
                     stringResource(R.string.authenticate),
                     Icons.Filled.AccountCircle,
@@ -101,7 +102,7 @@ fun AccountsScreen(
                     openScreen(LoginScreen)
                 }
             } else {
-                ExitAppCard { viewModel.onSignOutClick() }
+                ExitAppCard { viewModel.onSignOutClick(clearAndNavigate) }
                 RemoveAccountCard { viewModel.onDeleteAccount() }
                 Text(
                     "Last Sign in: " + formattedTime(user.lastSignIn) + " | " + "Joined " + formattedTime(

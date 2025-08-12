@@ -34,18 +34,20 @@ class LoginViewModel @Inject constructor(
         _password.value = newPassword
     }
 
-    fun handleSignIn(openAndPopUp: (Any, Any) -> Unit) {
+    fun handleSignIn(openAndPopUp: (Any, Any) -> Unit, clearAndNavigate: (Any)->Unit) {
         launchCatching {
             authRepository.signInWithEmail(_email.value, _password.value)
-            openAndPopUp(FeedScreen, LoginScreen)
+//            openAndPopUp(FeedScreen, LoginScreen)
+            clearAndNavigate(FeedScreen)
         }
     }
-    fun onSignInWithGoogle(credential: Credential, openAndPopUp: (Any, Any) -> Unit){
+    fun onSignInWithGoogle(credential: Credential, openAndPopUp: (Any, Any) -> Unit, clearAndNavigate: (Any)->Unit){
         launchCatching {
             if(credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 authRepository.signInWithGoogle(googleIdTokenCredential.idToken)
-                openAndPopUp(FeedScreen, LoginScreen)
+//                openAndPopUp(FeedScreen, LoginScreen)
+            clearAndNavigate(FeedScreen)
             }else{
                 Log.d("ERROR", "Unexpected Credential")
             }

@@ -5,6 +5,7 @@ import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+import com.saswat10.jetnetwork.FeedScreen
 import com.saswat10.jetnetwork.JNViewModel
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.presentation.auth.isValidEmail
@@ -44,7 +45,7 @@ class RegisterViewModel @Inject constructor(
         _confirmPassword.value = newConfirmPassword
     }
 
-    fun handleRegister(){
+    fun handleRegister(clearAndNavigate:(Any)-> Unit){
         launchCatching {
             if(!_email.value.isValidEmail()){
                 throw IllegalArgumentException(INVALID_EMAIL)
@@ -59,13 +60,15 @@ class RegisterViewModel @Inject constructor(
             }
 
             authRepository.linkAccountWithEmail(_email.value, _password.value)
+            clearAndNavigate(FeedScreen)
         }
     }
-    fun onSignInWithGoogle(credential: Credential){
+    fun onSignInWithGoogle(credential: Credential, clearAndNavigate:(Any)-> Unit){
         launchCatching {
             if(credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 authRepository.linkAccountWithGoogle(googleIdTokenCredential.idToken)
+                clearAndNavigate(FeedScreen)
             }else{
                 Log.d("ERROR", "Unexpected Credential")
             }
