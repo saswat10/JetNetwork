@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.PostScreen
+import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,16 +52,11 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> 
         modifier = Modifier
             .fillMaxSize()
     ) {
+        ProvideJNTopAppBarTitle {
+            Text("Feed", )
+        }
         Column(modifier = Modifier
             .fillMaxSize()) {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Feed",
-                        style = MaterialTheme.typography.displaySmall,
-                    )
-                }
-            )
             LazyColumn(
                 userScrollEnabled = true,
                 state = scrollstate

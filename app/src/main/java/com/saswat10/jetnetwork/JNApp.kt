@@ -12,6 +12,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,6 +51,8 @@ fun JNApp() {
         Surface(color = MaterialTheme.colorScheme.background) {
             val snackbarHostState = remember { SnackbarHostState() }
             val appState = rememberAppState(snackbarHostState)
+            val scrollBehavior =
+                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
             val items =
                 listOf(NavDestination.Feed, NavDestination.Conversation, NavDestination.Accounts)
@@ -65,6 +69,13 @@ fun JNApp() {
 
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) },
+                topBar = {
+                    JNTopAppBar(
+                        modifier = Modifier,
+                        navController = appState.navController,
+                        scrollBehavior = scrollBehavior
+                    )
+                },
                 bottomBar = {
                     AnimatedVisibility(shouldShowBottomBar) {
                         NavigationBar {
@@ -145,12 +156,14 @@ fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     }
 
     composable<ConversationList> {
-        ChatListScreen()
+        ChatListScreen() {
+            appState.navigate(it)
+        }
     }
 
-    composable<ChatList> {
-        val args = it.toRoute<ChatList>()
-        ChatScreen(conversationId = args.conversationId)
+    composable<Chat> {
+        val args = it.toRoute<Chat>()
+        ChatScreen(conversationId = args.conversationId, popUp = { appState.popUp() })
     }
 }
 
@@ -165,7 +178,7 @@ object AccountsScreen
 object ConversationList
 
 @Serializable
-data class ChatList(val conversationId: String)
+data class Chat(val conversationId: String)
 
 @Serializable
 object LoginScreen
@@ -175,3 +188,5 @@ object RegisterScreen
 
 @Serializable
 data class PostScreen(val postId: String)
+
+

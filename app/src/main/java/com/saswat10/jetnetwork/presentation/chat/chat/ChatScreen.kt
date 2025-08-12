@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,38 +37,54 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saswat10.jetnetwork.ProvideJNTopAppBarNavigationIcon
+import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.presentation.chat.components.MessageItem
 
 @Composable
-fun ChatScreen(viewModel: ChatViewModel = hiltViewModel(), conversationId: String) {
+fun ChatScreen(viewModel: ChatViewModel = hiltViewModel(), conversationId: String, popUp:()->Unit) {
     LaunchedEffect(Unit) {
         viewModel.loadConversationMessages(conversationId)
     }
-
-//    val messages by viewModel.messages.collectAsStateWithLifecycle()
     val messagesWithDate by viewModel.groupedMessages.collectAsStateWithLifecycle()
     val currentUserId = viewModel.currentUserId
     var comment by remember { mutableStateOf("") }
+    val scrollState = rememberLazyListState()
+
+    LaunchedEffect(messagesWithDate) {
+        if (messagesWithDate.isNotEmpty()) {
+            val lastGroupIndex = messagesWithDate.keys.size - 1
+            val lastGroupMessages = messagesWithDate.values.last()
+            val lastMessageIndex = lastGroupMessages.size - 1
+            scrollState.animateScrollToItem(0)
+        }
+    }
+
+    ProvideJNTopAppBarTitle {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.AccountCircle, null)
+            Text("Chat $conversationId")
+        }
+    }
+
+    ProvideJNTopAppBarNavigationIcon {
+        IconButton(onClick = {popUp()}) {
+            Icon(Icons.AutoMirrored.Default.ArrowBack, null)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
     ) {
-//        Row(Modifier.fillMaxWidth().background(Color.Red)) {
-//            Row(
-//                Modifier.padding(20.dp, 20.dp),
-//                horizontalArrangement = Arrangement.spacedBy(10.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Icon(Icons.Default.AccountCircle, null, Modifier.size(40.dp))
-//                Text("Name of th", style = MaterialTheme.typography.titleLarge)
-//            }
-//        }
+
         LazyColumn(
             reverseLayout = true,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .weight(1f)
+                .weight(1f),
+            state = scrollState
         ) {
 
 

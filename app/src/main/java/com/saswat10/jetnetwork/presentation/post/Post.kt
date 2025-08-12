@@ -37,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saswat10.jetnetwork.ProvideJNTopAppBarNavigationIcon
+import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
@@ -55,28 +57,22 @@ fun Post(
         viewModel.initialize(postId)
     }
 
+    ProvideJNTopAppBarTitle {
+        Text(
+            text = "Post",
+        )
+    }
+    ProvideJNTopAppBarNavigationIcon {
+        IconButton(onClick = {popUpScreen()}) {
+            Icon(Icons.AutoMirrored.Default.ArrowBack, "Back")
+        }
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
             .imePadding()
     ) {
         LazyColumn(modifier = modifier.imePadding()) {
-            item {
-                TopAppBar(title = {
-                    Text(
-                        text = "Post",
-                        style = MaterialTheme.typography.displaySmall
-                    )
-                },
-                    navigationIcon = {
-                        IconButton(onClick = {popUpScreen()}) {
-                            Icon(Icons.AutoMirrored.Default.ArrowBack, "Back")
-                        }
-                    }
-
-
-                )
-            }
             item {
                 OutlinedTextField(
                     value = post.title,

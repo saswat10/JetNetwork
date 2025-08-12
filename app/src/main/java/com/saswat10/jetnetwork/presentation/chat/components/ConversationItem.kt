@@ -1,6 +1,7 @@
 package com.saswat10.jetnetwork.presentation.chat.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,7 @@ import com.google.firebase.Timestamp
 import com.saswat10.jetnetwork.domain.models.Conversation
 import com.saswat10.jetnetwork.domain.models.Message
 import com.saswat10.jetnetwork.domain.models.User
+import com.saswat10.jetnetwork.utils.formatChatDate
 import com.saswat10.jetnetwork.utils.formattedTime
 
 @Composable
@@ -60,6 +62,12 @@ fun ConversationItem(
             }
 
         },
+        trailingContent = {
+            Text(formatChatDate(conversation.lastMessage.timestamp))
+        },
+        modifier = Modifier.clickable{
+            navigateToConservation()
+        }
         // TODO: adding badge for unread messages, and conditional date format
     )
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.LoginScreen
+import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.utils.formattedTime
 
@@ -47,12 +48,11 @@ fun AccountsScreen(
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopAppBar(title = {
+            ProvideJNTopAppBarTitle {
                 Text(
                     stringResource(R.string.account_center),
-                    style = MaterialTheme.typography.displaySmall
                 )
-            })
+            }
 
             Spacer(
                 modifier = Modifier
