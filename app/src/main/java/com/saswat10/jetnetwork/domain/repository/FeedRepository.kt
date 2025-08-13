@@ -9,6 +9,7 @@ interface FeedRepository {
     val feed: Flow<List<Post>>
     val feedItems: Flow<List<PostWithLikes>>
     suspend fun toggleLike(postId: String)
+    fun getLikeStatus(postId: String): Flow<Boolean>
     suspend fun getComments(postId: String): Flow<List<Comment>>
     suspend fun getComment(postId: String, commentId: String): Comment?
     suspend fun createComment(comment: Comment)

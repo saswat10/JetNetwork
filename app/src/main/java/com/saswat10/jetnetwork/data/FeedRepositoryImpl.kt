@@ -15,6 +15,7 @@ import com.saswat10.jetnetwork.domain.repository.FeedRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -160,6 +161,18 @@ class FeedRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             // Handle potential errors, e.g., log them and return false
             false
+        }
+    }
+
+    override fun getLikeStatus(postId: String): Flow<Boolean> {
+        val currentUserId = authRepository.currentUserId
+        return authRepository.currentUser.flatMapLatest { user->
+            Firebase.firestore
+                .collection(POSTS_COLLECTION).document(postId)
+                .collection(LIKES_SUBCOLLECTION).document(currentUserId)
+                .snapshots().map {
+                    it.exists()
+                }
         }
     }
 

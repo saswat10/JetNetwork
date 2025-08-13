@@ -3,25 +3,18 @@ package com.saswat10.jetnetwork.presentation.feed
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,11 +28,10 @@ import com.saswat10.jetnetwork.PostScreen
 import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> Unit) {
     LaunchedEffect(Unit) { viewModel.initialize() }
-    val posts by viewModel.postWithLikes.collectAsStateWithLifecycle(emptyList())
+    val posts2 by viewModel.post.collectAsStateWithLifecycle()
     val comments by viewModel.comments.collectAsStateWithLifecycle(emptyList())
     val showBottomSheet by viewModel.showModalSheet.collectAsStateWithLifecycle()
     val showEditCommentDialog by viewModel.showDialog.collectAsStateWithLifecycle()
@@ -65,7 +57,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> 
                 item {
 
                 }
-                items(posts, key = { it.post.id }) { postItem ->
+                items(posts2, key = { it.post.id }) { postItem ->
                     FeedItem(
                         modifier = Modifier
                             .animateItem()
@@ -116,7 +108,3 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> 
         )
     }
 }
-
-
-// TODO: add comment logic in order prevent function drilling
-// TODO: make the add comment in such a way so that we can update any previous comment of the user
