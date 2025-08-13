@@ -1,4 +1,4 @@
-package com.saswat10.jetnetwork
+package com.saswat10.jetnetwork.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
@@ -39,6 +39,7 @@ import com.saswat10.jetnetwork.presentation.chat.chat.ChatScreen
 import com.saswat10.jetnetwork.presentation.chat.chat_list.ChatListScreen
 import com.saswat10.jetnetwork.presentation.feed.FeedScreen
 import com.saswat10.jetnetwork.presentation.post.Post
+import com.saswat10.jetnetwork.presentation.splash.SplashScreen
 import com.saswat10.jetnetwork.ui.theme.JetNetworkTheme
 import com.saswat10.jetnetwork.utils.NavDestination
 import kotlinx.coroutines.CoroutineScope
@@ -105,7 +106,7 @@ fun JNApp() {
             ) { paddingValues ->
                 NavHost(
                     modifier = Modifier.padding(paddingValues),
-                    startDestination = FeedScreen,
+                    startDestination = SplashScreen,
                     navController = appState.navController as NavHostController,
                 ) {
                     jetnetworkGraph(appState)
@@ -128,6 +129,12 @@ fun rememberAppState(
 }
 
 fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
+    composable<SplashScreen> {
+        SplashScreen(clearAndNavigate = {
+            appState.clearAndNavigate(it)
+        })
+    }
+
     composable<FeedScreen> {
         FeedScreen(
             openScreen = { appState.navigate(it) }
@@ -177,7 +184,7 @@ fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     }
 
     composable<ConversationList> {
-        ChatListScreen() {
+        ChatListScreen {
             appState.navigate(it)
         }
     }
@@ -188,6 +195,8 @@ fun NavGraphBuilder.jetnetworkGraph(appState: JNAppState) {
     }
 }
 
+@Serializable
+object SplashScreen
 
 @Serializable
 object FeedScreen

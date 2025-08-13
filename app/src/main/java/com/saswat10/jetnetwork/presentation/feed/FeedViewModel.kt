@@ -8,10 +8,12 @@ import com.saswat10.jetnetwork.domain.models.Comment
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.FeedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -26,27 +28,52 @@ class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository
 ) : JNViewModel() {
 
-    val post: StateFlow<List<PostWithLikes>> = feedRepository.feed.flatMapLatest { posts ->
-        val likeStatusFlow = posts.map { post ->
-            feedRepository.getLikeStatus(post.id)
-                .map { isLiked ->
-                    post.id to isLiked
-                }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val post: StateFlow<List<PostWithLikes>> = combine(
+        feedRepository.feed,
+        authRepository.currentUser
+    ) { posts, user ->
+        when {
+            user == null -> {
+                posts.map { PostWithLikes(it, false) }
+            }
+            posts.isEmpty() -> {
+                emptyList()
+            }
+            else -> {
+                posts.map { PostWithLikes(it, false) }
+            }
         }
-
-        if (likeStatusFlow.isEmpty()) {
+    }.flatMapLatest { postsWithDefaults ->
+        if (postsWithDefaults.isEmpty()) {
             flowOf(emptyList())
         } else {
-            combine(likeStatusFlow) { likeStatusArray ->
-                val likeStatusMap = likeStatusArray.toMap()
-                posts.map { post ->
-                    val isLiked = likeStatusMap[post.id] ?: false
-                    PostWithLikes(post, isLiked)
+            authRepository.currentUser.flatMapLatest { user ->
+                if (user == null) {
+                    flowOf(postsWithDefaults)
+                } else {
+                    val likeStatusFlows = postsWithDefaults.map { postWithLike ->
+                        feedRepository.getLikeStatus(postWithLike.post.id)
+                            .map { isLiked -> postWithLike.post.id to isLiked }
+                            .catch {
+                                Log.w("PostViewModel", "Failed to get like status for ${postWithLike.post.id}")
+                                emit(postWithLike.post.id to false)
+                            }
+                    }
+
+                    combine(likeStatusFlows) { likeStatusArray ->
+                        val likeStatusMap = likeStatusArray.toMap()
+                        postsWithDefaults.map { postWithLike ->
+                            val isLiked = likeStatusMap[postWithLike.post.id] ?: false
+                            PostWithLikes(postWithLike.post, isLiked)
+                        }
+                    }
                 }
             }
         }
     }.stateIn(
-        viewModelScope, started = SharingStarted.WhileSubscribed(10_000),
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = emptyList()
     )
 

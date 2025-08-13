@@ -1,12 +1,11 @@
 package com.saswat10.jetnetwork.presentation.accounts_center
 
-import android.content.Intent
 import android.net.Uri
 import com.saswat10.jetnetwork.JNViewModel
-import com.saswat10.jetnetwork.LoginScreen
-import com.saswat10.jetnetwork.MainActivity
+import com.saswat10.jetnetwork.ui.LoginScreen
 import com.saswat10.jetnetwork.domain.models.User
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
+import com.saswat10.jetnetwork.ui.SplashScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +51,7 @@ class AccountsViewModel @Inject constructor(
     fun onSignOutClick(clearAndNavigate:(Any)-> Unit){
         launchCatching {
             authRepository.signOut()
-            clearAndNavigate(LoginScreen)
+            clearAndNavigate(SplashScreen)
             // TODO: add logic for restarting the app
         }
     }

@@ -5,9 +5,8 @@ import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-import com.saswat10.jetnetwork.FeedScreen
+import com.saswat10.jetnetwork.ui.FeedScreen
 import com.saswat10.jetnetwork.JNViewModel
-import com.saswat10.jetnetwork.LoginScreen
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +32,7 @@ class LoginViewModel @Inject constructor(
     fun updatePassword(newPassword: String){
         _password.value = newPassword
     }
+
 
     fun handleSignIn(openAndPopUp: (Any, Any) -> Unit, clearAndNavigate: (Any)->Unit) {
         launchCatching {

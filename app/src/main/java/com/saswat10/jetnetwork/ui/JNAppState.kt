@@ -1,13 +1,12 @@
-package com.saswat10.jetnetwork
+package com.saswat10.jetnetwork.ui
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Stable
 import androidx.navigation.NavController
+import com.saswat10.jetnetwork.ui.SnackbarManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 @Stable
 class JNAppState(
@@ -18,7 +17,7 @@ class JNAppState(
 ){
     init {
         coroutineScope.launch {
-            snackbarManager.snackbarMessages.filterNotNull().collect {message ->
+            snackbarManager.snackbarMessages.filterNotNull().collect { message ->
                 snackbarHostState.showSnackbar(message)
                 snackbarManager.clearSnackbarState()
             }

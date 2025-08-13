@@ -1,12 +1,8 @@
 package com.saswat10.jetnetwork.utils
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.saswat10.jetnetwork.AccountsScreen
-import com.saswat10.jetnetwork.ConversationList
-import com.saswat10.jetnetwork.FeedScreen
+import com.saswat10.jetnetwork.ui.AccountsScreen
+import com.saswat10.jetnetwork.ui.ConversationList
+import com.saswat10.jetnetwork.ui.FeedScreen
 import com.saswat10.jetnetwork.R
 
 const val DEFAULT_POST_ID = "-1"

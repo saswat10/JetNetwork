@@ -3,13 +3,12 @@ package com.saswat10.jetnetwork.presentation.chat.chat_list
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.viewModelScope
-import com.saswat10.jetnetwork.FeedScreen
+import com.saswat10.jetnetwork.ui.FeedScreen
 import com.saswat10.jetnetwork.JNViewModel
 import com.saswat10.jetnetwork.domain.models.Conversation
 import com.saswat10.jetnetwork.domain.models.User
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.ChatRepository
-import com.saswat10.jetnetwork.utils.NavDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

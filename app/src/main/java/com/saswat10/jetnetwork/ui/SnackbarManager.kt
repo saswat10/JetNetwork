@@ -1,4 +1,4 @@
-package com.saswat10.jetnetwork
+package com.saswat10.jetnetwork.ui
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

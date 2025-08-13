@@ -15,6 +15,7 @@ import com.saswat10.jetnetwork.domain.repository.FeedRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.tasks.await
@@ -31,22 +32,6 @@ class FeedRepositoryImpl @Inject constructor(
                 .whereEqualTo(FIELD_PRIVATE, false)
                 .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
                 .dataObjects<Post>()
-        }
-
-    override val feedItems: Flow<List<PostWithLikes>>
-        get() = authRepository.currentUser.flatMapLatest { user ->
-            Firebase.firestore
-                .collection(POSTS_COLLECTION)
-                .whereEqualTo(FIELD_PRIVATE, false)
-                .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
-                .snapshots()
-                .mapLatest { posts ->
-                    posts.map {
-                        val post = it.toObject<Post>()
-                        val isLiked = checkLikeStatus(it.id, authRepository.currentUserId)
-                        PostWithLikes(post = post, isLiked = isLiked)
-                    }
-                }
         }
 
     override suspend fun toggleLike(postId: String) {
@@ -119,9 +104,11 @@ class FeedRepositoryImpl @Inject constructor(
                 .document(comment.postId)
                 .collection(COMMENTS_SUBCOLLECTION).document()
             it.set(commentRef, commentWithUserData)
-            it.update(Firebase.firestore
-                .collection(POSTS_COLLECTION)
-                .document(comment.postId), FIELD_COMMENTS, FieldValue.increment((+1)))
+            it.update(
+                Firebase.firestore
+                    .collection(POSTS_COLLECTION)
+                    .document(comment.postId), FIELD_COMMENTS, FieldValue.increment((+1))
+            )
         }.await()
     }
 
@@ -141,38 +128,30 @@ class FeedRepositoryImpl @Inject constructor(
 
     override suspend fun deleteComment(commentId: String, postId: String) {
         Firebase.firestore.runTransaction {
-            it.delete(Firebase.firestore
-                .collection(POSTS_COLLECTION)
-                .document(postId)
-                .collection(COMMENTS_SUBCOLLECTION)
-                .document(commentId))
-            it.update(Firebase.firestore
-                .collection(POSTS_COLLECTION)
-                .document(postId), FIELD_COMMENTS, FieldValue.increment((-1)))
+            it.delete(
+                Firebase.firestore
+                    .collection(POSTS_COLLECTION)
+                    .document(postId)
+                    .collection(COMMENTS_SUBCOLLECTION)
+                    .document(commentId)
+            )
+            it.update(
+                Firebase.firestore
+                    .collection(POSTS_COLLECTION)
+                    .document(postId), FIELD_COMMENTS, FieldValue.increment((-1))
+            )
         }.await()
     }
 
-    private suspend fun checkLikeStatus(postId: String, userId: String): Boolean {
-        return try {
-            Firebase.firestore
-                .collection(POSTS_COLLECTION).document(postId)
-                .collection(LIKES_SUBCOLLECTION).document(userId)
-                .get().await().exists()
-        } catch (e: Exception) {
-            // Handle potential errors, e.g., log them and return false
-            false
-        }
-    }
-
     override fun getLikeStatus(postId: String): Flow<Boolean> {
-        val currentUserId = authRepository.currentUserId
-        return authRepository.currentUser.flatMapLatest { user->
-            Firebase.firestore
-                .collection(POSTS_COLLECTION).document(postId)
-                .collection(LIKES_SUBCOLLECTION).document(currentUserId)
-                .snapshots().map {
-                    it.exists()
-                }
+        return authRepository.currentUser.flatMapLatest { user ->
+                Firebase.firestore
+                    .collection(POSTS_COLLECTION).document(postId)
+                    .collection(LIKES_SUBCOLLECTION).document(user?.id?:"null_user")
+                    .snapshots().map {
+                        it.exists()
+
+                    }
         }
     }
 

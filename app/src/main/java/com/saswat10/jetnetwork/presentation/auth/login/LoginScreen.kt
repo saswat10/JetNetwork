@@ -30,9 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.R
-import com.saswat10.jetnetwork.RegisterScreen
+import com.saswat10.jetnetwork.ui.RegisterScreen
 import com.saswat10.jetnetwork.presentation.auth.AuthenticationButton
 import com.saswat10.jetnetwork.presentation.auth.launchCredentialManagerBottomSheet
+import com.saswat10.jetnetwork.ui.FeedScreen
+import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarAction
 
 @Composable
 fun LoginScreen(
@@ -51,6 +53,15 @@ fun LoginScreen(
             viewModel.onSignInWithGoogle(credential, openAndPopUp, clearAndNavigate)
         }
     }
+
+    ProvideJNTopAppBarAction {
+        TextButton(onClick = {
+            clearAndNavigate(FeedScreen)
+        }) {
+            Text("Skip Login")
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -129,7 +140,7 @@ fun LoginScreen(
 
             HorizontalDivider()
 
-            TextButton(onClick = {
+            TextButton(modifier = Modifier.fillMaxWidth(), onClick = {
                 openScreen(RegisterScreen)
             }) {
                 Text("No Account? Sign up")

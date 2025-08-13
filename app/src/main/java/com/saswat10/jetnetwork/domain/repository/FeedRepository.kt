@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FeedRepository {
     val feed: Flow<List<Post>>
-    val feedItems: Flow<List<PostWithLikes>>
     suspend fun toggleLike(postId: String)
     fun getLikeStatus(postId: String): Flow<Boolean>
     suspend fun getComments(postId: String): Flow<List<Comment>>

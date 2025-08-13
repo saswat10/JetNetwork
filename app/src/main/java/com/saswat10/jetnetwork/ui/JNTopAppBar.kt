@@ -1,9 +1,8 @@
-package com.saswat10.jetnetwork
+package com.saswat10.jetnetwork.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.saswat10.jetnetwork.JNViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

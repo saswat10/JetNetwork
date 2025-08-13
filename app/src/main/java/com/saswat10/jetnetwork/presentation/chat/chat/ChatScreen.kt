@@ -1,6 +1,5 @@
 package com.saswat10.jetnetwork.presentation.chat.chat
 
-import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.saswat10.jetnetwork.ProvideJNTopAppBarNavigationIcon
-import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
+import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarNavigationIcon
+import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.presentation.chat.components.MessageItem
 
 @Composable

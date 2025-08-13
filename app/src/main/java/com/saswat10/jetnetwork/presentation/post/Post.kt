@@ -22,7 +22,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,18 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.saswat10.jetnetwork.ProvideJNTopAppBarAction
-import com.saswat10.jetnetwork.ProvideJNTopAppBarNavigationIcon
-import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
+import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarAction
+import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarNavigationIcon
 import com.saswat10.jetnetwork.R
-import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

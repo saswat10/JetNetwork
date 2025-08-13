@@ -13,7 +13,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.saswat10.jetnetwork.LoginScreen
-import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
+import com.saswat10.jetnetwork.ui.LoginScreen
+import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.utils.formattedTime
 
