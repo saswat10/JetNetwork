@@ -1,8 +1,10 @@
 package com.saswat10.jetnetwork.presentation.feed
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -38,6 +40,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,10 +49,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.domain.models.Comment
 import com.saswat10.jetnetwork.utils.formatName
@@ -150,12 +156,18 @@ fun CommentCard(
             verticalAlignment = Alignment.Top,
             modifier = Modifier.padding(12.dp, 8.dp)
         ) {
-            Icon(Icons.Default.AccountCircle, comment.userId, Modifier.size(30.dp))
+            AsyncImage(
+                model = comment.photoUrl,
+                contentDescription = comment.username,
+                Modifier.size(30.dp).clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
             Column(Modifier.weight(1f)) {
-                Column(
-                    horizontalAlignment = Alignment.Start
+                Row(
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
                     Text(formatName(comment.username), style = MaterialTheme.typography.labelLarge)
+                    Spacer(modifier = Modifier.height(IntrinsicSize.Min).background(Color.Gray))
                     Text(
                         formattedTime(comment.createdAt),
                         style = MaterialTheme.typography.labelSmall,

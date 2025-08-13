@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saswat10.jetnetwork.ProvideJNTopAppBarAction
 import com.saswat10.jetnetwork.ProvideJNTopAppBarNavigationIcon
 import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.R
@@ -57,14 +58,14 @@ fun Post(
         viewModel.initialize(postId)
     }
 
-    ProvideJNTopAppBarTitle {
-        Text(
-            text = "Post",
-        )
-    }
     ProvideJNTopAppBarNavigationIcon {
         IconButton(onClick = {popUpScreen()}) {
             Icon(Icons.AutoMirrored.Default.ArrowBack, "Back")
+        }
+    }
+    ProvideJNTopAppBarAction {
+        Button(onClick = { viewModel.savePost(popUpScreen) }, modifier = Modifier.padding(end = 10.dp)) {
+            Text("Post")
         }
     }
     Box(
@@ -136,9 +137,7 @@ fun Post(
                     Icon(painterResource(R.drawable.add_photo), "Add Photos", Modifier.size(30.dp))
                     Icon(painterResource(R.drawable.add_video), "Add Video", Modifier.size(30.dp))
                 }
-                Button(onClick = { viewModel.savePost(popUpScreen) }) {
-                    Text("Post")
-                }
+
             }
         }
 

@@ -106,6 +106,15 @@ class ChatRepositoryImpl @Inject constructor(
             .toObjects<Conversation>().first()
     }
 
+    override suspend fun getConversationById(conversationId: String): Conversation? {
+        return Firebase.firestore
+            .collection(CONVERSATION_COLLECTION)
+            .document(conversationId)
+            .get()
+            .await()
+            .toObject<Conversation>()
+    }
+
     override suspend fun loadConversation(conversationId: String): Flow<List<Message>> {
         return authRepository.currentUser.flatMapLatest {
             Firebase.firestore

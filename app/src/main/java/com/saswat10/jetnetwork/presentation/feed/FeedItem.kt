@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
@@ -32,11 +33,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
 import com.saswat10.jetnetwork.ui.theme.Pink
@@ -64,7 +68,12 @@ fun FeedItem(
                 .padding(10.dp, 10.dp, 10.dp, 4.dp)
                 .fillMaxWidth()
         ) {
-            Icon(Icons.Default.AccountCircle, null, Modifier.size(36.dp))
+            AsyncImage(
+                model = feed.photoUrl,
+                contentDescription = feed.username,
+                Modifier.size(40.dp).clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
             Column(Modifier.padding(top = 4.dp)) {
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(formatName(feed.username), style = MaterialTheme.typography.labelLarge)

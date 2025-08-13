@@ -52,10 +52,3 @@ class JNAppState(
     }
 
 }
-
-
-
-
-
-@Serializable
-object Feed

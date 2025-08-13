@@ -2,6 +2,7 @@ package com.saswat10.jetnetwork.presentation.chat.chat
 
 import androidx.lifecycle.viewModelScope
 import com.saswat10.jetnetwork.JNViewModel
+import com.saswat10.jetnetwork.domain.models.Conversation
 import com.saswat10.jetnetwork.domain.models.Message
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.ChatRepository
@@ -14,8 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import java.time.LocalDate
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,8 +24,10 @@ class ChatViewModel @Inject constructor(
 ) : JNViewModel() {
 
     val currentUserId = authRepository.currentUserId
+
+    private val _conversation = MutableStateFlow<Conversation?>(null)
+    val conversation = _conversation.asStateFlow()
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
-    val messages = _messages.asStateFlow()
     val groupedMessages: StateFlow<Map<String, List<Message>>> =
         _messages
             .map { messages ->
@@ -35,6 +36,19 @@ class ChatViewModel @Inject constructor(
                 }
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+
+    val participant = _conversation.map { conversation ->
+        conversation?.participants?.first { user ->
+            user.id != authRepository.currentUserId
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), null)
+
+    fun loadConversation(conversationId: String) {
+        launchCatching {
+            _conversation.value = chatRepository.getConversationById(conversationId)
+        }
+    }
 
     fun loadConversationMessages(conversationId: String) {
         launchCatching {

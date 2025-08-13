@@ -1,6 +1,7 @@
 package com.saswat10.jetnetwork
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -34,7 +35,7 @@ fun JNTopAppBar(
             initializer = { JNTopAppBarViewModel() }
         )
 
-        TopAppBar(
+        CenterAlignedTopAppBar(
             title = {
                 AnimatedContent(
                     targetState = viewModel.title,

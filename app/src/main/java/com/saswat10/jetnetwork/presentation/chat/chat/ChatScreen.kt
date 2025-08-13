@@ -1,6 +1,6 @@
 package com.saswat10.jetnetwork.presentation.chat.chat
 
-import androidx.compose.foundation.background
+import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,43 +31,68 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.saswat10.jetnetwork.ProvideJNTopAppBarNavigationIcon
 import com.saswat10.jetnetwork.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.presentation.chat.components.MessageItem
 
 @Composable
-fun ChatScreen(viewModel: ChatViewModel = hiltViewModel(), conversationId: String, popUp:()->Unit) {
+fun ChatScreen(
+    viewModel: ChatViewModel = hiltViewModel(),
+    conversationId: String,
+    popUp: () -> Unit
+) {
     LaunchedEffect(Unit) {
+        viewModel.loadConversation(conversationId)
         viewModel.loadConversationMessages(conversationId)
     }
     val messagesWithDate by viewModel.groupedMessages.collectAsStateWithLifecycle()
     val currentUserId = viewModel.currentUserId
+    val participant = viewModel.participant.collectAsStateWithLifecycle()
     var comment by remember { mutableStateOf("") }
     val scrollState = rememberLazyListState()
 
     LaunchedEffect(messagesWithDate) {
         if (messagesWithDate.isNotEmpty()) {
-            val lastGroupIndex = messagesWithDate.keys.size - 1
+            messagesWithDate.keys.size - 1
             val lastGroupMessages = messagesWithDate.values.last()
-            val lastMessageIndex = lastGroupMessages.size - 1
+            lastGroupMessages.size - 1
             scrollState.animateScrollToItem(0)
         }
     }
 
     ProvideJNTopAppBarTitle {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.AccountCircle, null)
-            Text("Chat $conversationId")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            participant.let { user ->
+                user.value?.let {
+                    AsyncImage(
+                        model = it.photoUrl,
+                        contentDescription = it.displayName,
+                        Modifier
+                            .size(24.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(it.displayName, style = MaterialTheme.typography.titleMedium)
+                }
+            }
+
         }
     }
 
     ProvideJNTopAppBarNavigationIcon {
-        IconButton(onClick = {popUp()}) {
+        IconButton(onClick = { popUp() }) {
             Icon(Icons.AutoMirrored.Default.ArrowBack, null)
         }
     }

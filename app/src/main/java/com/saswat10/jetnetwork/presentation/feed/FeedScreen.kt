@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,7 +54,7 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> 
             .fillMaxSize()
     ) {
         ProvideJNTopAppBarTitle {
-            Text("Feed", )
+            Text("JetNetwork", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         }
         Column(modifier = Modifier
             .fillMaxSize()) {

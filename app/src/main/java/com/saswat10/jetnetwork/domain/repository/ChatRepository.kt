@@ -15,6 +15,7 @@ interface ChatRepository {
     suspend fun createNewConversation(targetUser: User): Conversation?
     suspend fun conversationExists(targetUser: User): Boolean
     suspend fun getConversation(targetUser: User): Conversation
+    suspend fun getConversationById(conversationId: String): Conversation?
     suspend fun loadConversation(conversationId: String): Flow<List<Message>>
     suspend fun sendMessage(conversationId: String, message: Message)
     suspend fun updateMessage(conversation: Conversation, message: Message)

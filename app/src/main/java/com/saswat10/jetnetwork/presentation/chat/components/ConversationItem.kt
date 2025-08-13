@@ -1,27 +1,24 @@
 package com.saswat10.jetnetwork.presentation.chat.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material3.Badge
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.google.firebase.Timestamp
 import com.saswat10.jetnetwork.domain.models.Conversation
 import com.saswat10.jetnetwork.domain.models.Message
 import com.saswat10.jetnetwork.domain.models.User
 import com.saswat10.jetnetwork.utils.formatChatDate
-import com.saswat10.jetnetwork.utils.formattedTime
 
 @Composable
 fun ConversationItem(
@@ -39,7 +36,12 @@ fun ConversationItem(
 
     ListItem(
         leadingContent = {
-            Icon(Icons.Default.AccountBox, "null", Modifier.size(36.dp))
+            AsyncImage(
+                model = participant.photoUrl,
+                contentDescription = participant.displayName,
+                modifier = Modifier.size(40.dp).clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
         },
         headlineContent = {
             Text(participant.displayName.ifBlank { "Anonymous User" })

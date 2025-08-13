@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -52,7 +53,8 @@ fun JNApp() {
             val snackbarHostState = remember { SnackbarHostState() }
             val appState = rememberAppState(snackbarHostState)
             val scrollBehavior =
-                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+                TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
 
             val items =
                 listOf(NavDestination.Feed, NavDestination.Conversation, NavDestination.Accounts)
@@ -76,6 +78,7 @@ fun JNApp() {
                         scrollBehavior = scrollBehavior
                     )
                 },
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 bottomBar = {
                     AnimatedVisibility(shouldShowBottomBar) {
                         NavigationBar {
