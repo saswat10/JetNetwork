@@ -1,4 +1,4 @@
-package com.saswat10.jetnetwork.presentation.feed
+package com.saswat10.jetnetwork.presentation.feed.feed_list
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.saswat10.jetnetwork.presentation.feed.CommentBottomSheet
+import com.saswat10.jetnetwork.presentation.feed.EditCommentDialog
+import com.saswat10.jetnetwork.presentation.feed.FeedItem
+import com.saswat10.jetnetwork.presentation.feed.feed_list.FeedViewModel
+import com.saswat10.jetnetwork.presentation.post.Post
 import com.saswat10.jetnetwork.ui.PostScreen
 import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarTitle
 import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
@@ -39,8 +44,6 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> 
 
     val scrollstate = rememberLazyListState()
 
-    // TODO: Add edit post in the feed item
-    // TODO: Also add delete post in the feed item
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,21 +57,21 @@ fun FeedScreen(viewModel: FeedViewModel = hiltViewModel(), openScreen: (Any) -> 
                 userScrollEnabled = true,
                 state = scrollstate
             ) {
-                item {
-
-                }
                 items(posts2, key = { it.post.id }) { postItem ->
                     FeedItem(
                         modifier = Modifier
                             .animateItem()
-                            .padding(horizontal = 10.dp),
+                            .padding(horizontal = 12.dp),
                         postWithLikes = postItem,
+                        currentUserId = viewModel.currentUserId,
                         getComments = {
                             viewModel.showModalSheet()
                             viewModel.getComments(postItem.post.id)
                         },
                         toggleLike = { viewModel.toggleLike(postItem.post.id) },
-                        toggleBookMark = {}
+                        openEditPage = {
+                            openScreen(PostScreen(postItem.post.id))
+                        }
                     )
                     Spacer(Modifier.height(10.dp))
                 }

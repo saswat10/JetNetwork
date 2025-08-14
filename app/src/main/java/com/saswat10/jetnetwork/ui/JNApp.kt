@@ -37,7 +37,7 @@ import com.saswat10.jetnetwork.presentation.auth.login.LoginScreen
 import com.saswat10.jetnetwork.presentation.auth.register.RegisterScreen
 import com.saswat10.jetnetwork.presentation.chat.chat.ChatScreen
 import com.saswat10.jetnetwork.presentation.chat.chat_list.ChatListScreen
-import com.saswat10.jetnetwork.presentation.feed.FeedScreen
+import com.saswat10.jetnetwork.presentation.feed.feed_list.FeedScreen
 import com.saswat10.jetnetwork.presentation.post.Post
 import com.saswat10.jetnetwork.presentation.splash.SplashScreen
 import com.saswat10.jetnetwork.ui.theme.JetNetworkTheme

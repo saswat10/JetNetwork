@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -26,9 +27,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarAction
 import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarNavigationIcon
-import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarTitle
+import com.saswat10.jetnetwork.utils.DEFAULT_POST_ID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +52,6 @@ fun Post(
 
     val post by viewModel.post.collectAsStateWithLifecycle()
     val user by viewModel.user.collectAsStateWithLifecycle()
-    var expanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.initialize(postId)
@@ -66,17 +63,38 @@ fun Post(
         }
     }
     ProvideJNTopAppBarAction {
-        InputChip(
-            onClick = { viewModel.toggleVisibility() },
-            label = { if (post.private) Text("Private") else Text("Public") },
-            enabled = !user.anonymous,
-            selected = !post.private,
+        Row(
             modifier = Modifier.padding(end = 20.dp),
-            leadingIcon = {
-                if (post.private) Icon(painterResource(R.drawable.visibility_off_24px), null, modifier = Modifier.size(16.dp))
-                else Icon(painterResource(R.drawable.visibility_24px), null, modifier = Modifier.size(16.dp))
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            InputChip(
+                onClick = { viewModel.toggleVisibility() },
+                label = { if (post.private) Text("Private") else Text("Public") },
+                enabled = !user.anonymous,
+                selected = !post.private,
+                leadingIcon = {
+                    if (post.private) Icon(
+                        painterResource(R.drawable.visibility_off_24px),
+                        null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    else Icon(
+                        painterResource(R.drawable.visibility_24px),
+                        null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            )
+            if(postId != DEFAULT_POST_ID) {
+                IconButton(onClick = { viewModel.deletePost(postId, popUpScreen) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        tint = MaterialTheme.colorScheme.error,
+                        contentDescription = "Delete"
+                    )
+                }
             }
-        )
+        }
     }
     Box(
         modifier = modifier
@@ -140,10 +158,9 @@ fun Post(
         ) {
             Row(
                 modifier = Modifier.padding(20.dp, 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(painterResource(R.drawable.add_photo), "Add Photos", Modifier.size(30.dp))
                 Button(
                     onClick = { viewModel.savePost(popUpScreen) },
                 ) {
@@ -156,10 +173,3 @@ fun Post(
 
     }
 }
-
-//@Preview(apiLevel = 34)
-//@Composable
-//fun PostPreview() {
-//
-//    Post(postId = DEFAULT_POST_ID, modifier = Modifier.fillMaxSize())
-//}

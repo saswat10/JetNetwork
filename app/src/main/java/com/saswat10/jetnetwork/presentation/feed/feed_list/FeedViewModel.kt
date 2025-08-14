@@ -1,4 +1,4 @@
-package com.saswat10.jetnetwork.presentation.feed
+package com.saswat10.jetnetwork.presentation.feed.feed_list
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -37,9 +37,11 @@ class FeedViewModel @Inject constructor(
             user == null -> {
                 posts.map { PostWithLikes(it, false) }
             }
+
             posts.isEmpty() -> {
                 emptyList()
             }
+
             else -> {
                 posts.map { PostWithLikes(it, false) }
             }
@@ -73,7 +75,7 @@ class FeedViewModel @Inject constructor(
         }
     }.stateIn(
         viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
+        started = SharingStarted.Companion.WhileSubscribed(5_000),
         initialValue = emptyList()
     )
 

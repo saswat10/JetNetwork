@@ -1,10 +1,7 @@
 package com.saswat10.jetnetwork.presentation.feed
 
-import android.widget.Button
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Ease
-import androidx.compose.animation.core.animateValueAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,34 +13,31 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.saswat10.jetnetwork.R
 import com.saswat10.jetnetwork.domain.domain_models.PostWithLikes
-import com.saswat10.jetnetwork.ui.theme.Pink
 import com.saswat10.jetnetwork.utils.formatName
 import com.saswat10.jetnetwork.utils.formattedTime
 
@@ -52,105 +46,127 @@ fun FeedItem(
     postWithLikes: PostWithLikes,
     getComments: () -> Unit,
     toggleLike: () -> Unit,
-    toggleBookMark: () -> Unit, // TODO
-    modifier: Modifier
+    modifier: Modifier,
+    currentUserId: String,
+    openEditPage: () -> Unit
 ) {
 
     val feed = postWithLikes.post
     val isLiked = postWithLikes.isLiked
-    ElevatedCard(
+    var isExpanded by remember { mutableStateOf(false) }
+    OutlinedCard(
         modifier = modifier.fillMaxWidth()
     ) {
-        Row(
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        Column(
             modifier = Modifier
-                .padding(10.dp, 10.dp, 10.dp, 4.dp)
+                .padding(10.dp, 10.dp, 10.dp, 6.dp)
                 .fillMaxWidth()
         ) {
-            AsyncImage(
-                model = feed.photoUrl,
-                contentDescription = feed.username,
-                Modifier.size(40.dp).clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            Column(Modifier.padding(top = 4.dp)) {
-                Column(horizontalAlignment = Alignment.Start) {
-                    Text(formatName(feed.username), style = MaterialTheme.typography.labelLarge)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 6.dp)
+            ) {
+                AsyncImage(
+                    model = feed.photoUrl,
+                    contentDescription = feed.username,
+                    Modifier
+                        .size(36.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                Column(
+                    Modifier
+                        .padding(top = 4.dp)
+                        .weight(1f)
+                ) {
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(formatName(feed.username), style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            formattedTime(feed.createdAt),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
+                if (currentUserId == postWithLikes.post.userId) {
+                    Icon(Icons.Default.Edit, null, Modifier
+                        .clip(CircleShape)
+                        .clickable{
+                            openEditPage()
+                        }
+                        .size(26.dp)
+                        .padding(4.dp)
+                    )
+
+                }
+            }
+
+
+            Column(modifier = Modifier.padding(10.dp, 16.dp, 10.dp, 8.dp)) {
+                Text(
+                    feed.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    feed.content,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.animateContentSize()
+                )
+                if (feed.content.length > 40) {
                     Text(
-                        formattedTime(feed.createdAt),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.secondary
+                        text = if (isExpanded) "Show Less" else "Read More",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .padding(top = 10.dp, end = 10.dp)
+                            .align(Alignment.End)
+                            .clickable { isExpanded = !isExpanded }
                     )
                 }
 
+            }
 
-                Column(modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 8.dp)) {
-                    Text(feed.title, style = MaterialTheme.typography.titleLarge)
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(feed.content, style = MaterialTheme.typography.bodyLarge, maxLines = 3, overflow = TextOverflow.Ellipsis)
-                }
-
-
+            HorizontalDivider()
+            Row(
+                horizontalArrangement = Arrangement.Start, modifier = Modifier
+                    .fillMaxWidth()
+            ) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 6.dp)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.Top
+                    TextButton(
+                        onClick = { toggleLike() },
                     ) {
-                        FilledTonalButton(
-                            onClick = { toggleLike() },
-                            colors = if (isLiked) ButtonDefaults.buttonColors() else ButtonDefaults.filledTonalButtonColors()
-                        ) {
-                            Icon(
-                                if (!isLiked) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
-                                "Like",
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(Modifier.width(6.dp))
-                            Text(
-                                feed.likes.toString(),
-                            )
-                        }
-
-                        FilledTonalButton(onClick = { getComments() }) {
-                            Icon(
-                                painter = painterResource(R.drawable.comment_24px),
-                                "Comment",
-                                Modifier.size(16.dp)
-                            )
-                            Spacer(Modifier.width(6.dp))
-                            Text(
-                                feed.comments.toString(),
-                            )
-                        }
-
-                    }
-                    FilledTonalIconButton(onClick = {}) {
                         Icon(
-                            painter = painterResource(R.drawable.bookmark_24px),
-                            "Bookmark",
-                            modifier = Modifier
-                                .size(16.dp),
+                            if (!isLiked) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
+                            "Like",
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            feed.likes.toString(),
                         )
                     }
+
+                    TextButton(onClick = { getComments() }) {
+                        Icon(
+                            painter = painterResource(R.drawable.comment_24px),
+                            "Comment",
+                            Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            feed.comments.toString(),
+                        )
+                    }
+
                 }
             }
         }
     }
-}
-
-//@Preview(apiLevel = 34, showSystemUi = false, showBackground = false)
-//@Composable
-//fun FeedItemPreview() {
-//    FeedItem(PostWithLikes(), {}, {}, {})
-//}
-//
-@Preview(apiLevel = 34, showSystemUi = false, showBackground = true)
-@Composable
-fun FeedItemDarkPreview() {
-    FeedItem(PostWithLikes(), {}, {}, {}, Modifier)
 }

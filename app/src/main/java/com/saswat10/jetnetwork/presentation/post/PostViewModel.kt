@@ -74,4 +74,12 @@ class PostViewModel @Inject constructor(
         popUpScreen()
     }
 
+    fun deletePost(postId:String, popUpScreen: () -> Unit){
+        launchCatching {
+            postRepository.deletePost(postId)
+        }
+
+        popUpScreen()
+    }
+
 }
