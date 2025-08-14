@@ -49,17 +49,11 @@ fun ChatListScreen(viewModel: ChatListViewModel = hiltViewModel(), openScreen:(A
                 onSearch = { viewModel.searchUsers(it) },
                 searchResults = users,
             ) { user ->
-                viewModel.loadConversation(user) {
-                    println(it)
-                    println(user)
-                }
+                viewModel.loadConversation(user, openScreen)
             }
         }
 
         LazyColumn() {
-            item {
-
-            }
             items(conversationList, { it.id }) { conversation ->
                 ConversationItem(
                     currentUserId = currentUserId,

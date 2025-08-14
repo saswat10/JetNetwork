@@ -9,6 +9,8 @@ import com.saswat10.jetnetwork.domain.models.Conversation
 import com.saswat10.jetnetwork.domain.models.User
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
 import com.saswat10.jetnetwork.domain.repository.ChatRepository
+import com.saswat10.jetnetwork.ui.Chat
+import com.saswat10.jetnetwork.ui.ConversationList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -76,12 +78,15 @@ class ChatListViewModel @Inject constructor(
         launchCatching {
             val result = chatRepository.conversationExists(targetUser)
             if(result){
-                openScreen(FeedScreen)
                 val conversation = chatRepository.getConversation(targetUser)
-                println(conversation)
+                openScreen(Chat(conversation.id))
             }else{
-                chatRepository.createNewConversation(targetUser)
-                openScreen(FeedScreen)
+                val conversation = chatRepository.createNewConversation(targetUser)
+                if(conversation != null) {
+                    openScreen(Chat(conversation.id))
+                }else{
+                    openScreen(ConversationList)
+                }
             }
         }
     }

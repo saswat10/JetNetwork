@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -75,14 +76,18 @@ fun ChatScreen(
         ) {
             participant.let { user ->
                 user.value?.let {
-                    AsyncImage(
-                        model = it.photoUrl,
-                        contentDescription = it.displayName,
-                        Modifier
-                            .size(24.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                    if(it.photoUrl.isBlank()){
+                        Icon(Icons.Default.AccountCircle, null, Modifier.size(30.dp))
+                    }else {
+                        AsyncImage(
+                            model = it.photoUrl,
+                            contentDescription = it.displayName,
+                            Modifier
+                                .size(24.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                     Text(it.displayName, style = MaterialTheme.typography.titleMedium)
                 }
             }

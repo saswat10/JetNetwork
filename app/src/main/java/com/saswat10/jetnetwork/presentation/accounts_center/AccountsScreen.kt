@@ -102,7 +102,7 @@ fun AccountsScreen(
                 }
             } else {
                 ExitAppCard { viewModel.onSignOutClick(clearAndNavigate) }
-                RemoveAccountCard { viewModel.onDeleteAccount() }
+//                RemoveAccountCard { viewModel.onDeleteAccount() }
                 Text(
                     "Last Sign in: " + formattedTime(user.lastSignIn) + " | " + "Joined " + formattedTime(
                         user.joined

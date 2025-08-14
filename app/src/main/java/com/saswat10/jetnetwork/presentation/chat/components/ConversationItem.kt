@@ -3,6 +3,9 @@ package com.saswat10.jetnetwork.presentation.chat.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,12 +39,16 @@ fun ConversationItem(
 
     ListItem(
         leadingContent = {
-            AsyncImage(
-                model = participant.photoUrl,
-                contentDescription = participant.displayName,
-                modifier = Modifier.size(40.dp).clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            if(participant.photoUrl.isBlank()){
+                Icon(Icons.Default.AccountCircle, null, Modifier.size(44.dp))
+            }else {
+                AsyncImage(
+                    model = participant.photoUrl,
+                    contentDescription = participant.displayName,
+                    modifier = Modifier.size(40.dp).clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
         },
         headlineContent = {
             Text(participant.displayName.ifBlank { "Anonymous User" })

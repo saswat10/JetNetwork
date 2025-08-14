@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -67,14 +68,18 @@ fun FeedItem(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 6.dp)
             ) {
-                AsyncImage(
-                    model = feed.photoUrl,
-                    contentDescription = feed.username,
-                    Modifier
-                        .size(36.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                if(feed.photoUrl == "null"){
+                    Icon(Icons.Default.AccountCircle, null, Modifier.size(44.dp))
+                }else {
+                    AsyncImage(
+                        model = feed.photoUrl,
+                        contentDescription = feed.username,
+                        Modifier
+                            .size(36.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(
                     Modifier
                         .padding(top = 4.dp)

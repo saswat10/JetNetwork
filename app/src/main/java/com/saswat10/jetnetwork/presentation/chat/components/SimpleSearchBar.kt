@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -91,14 +92,18 @@ fun SimpleSearchBar(
 fun UserSearchItem(user: User, onClick: () -> Unit) {
     ListItem(
         leadingContent = {
-            AsyncImage(
-                model = user.photoUrl,
-                contentDescription = user.displayName,
-                Modifier
-                    .size(26.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            if(user.photoUrl.isBlank()){
+                Icon(Icons.Default.AccountCircle, null, Modifier.size(40.dp))
+            }else {
+                AsyncImage(
+                    model = user.photoUrl,
+                    contentDescription = user.displayName,
+                    Modifier
+                        .size(36.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
         },
         headlineContent = { Text(user.displayName) },
         trailingContent = { TextButton({ onClick() }, content = { Text("Message") }) },

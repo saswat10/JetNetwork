@@ -156,12 +156,18 @@ fun CommentCard(
             verticalAlignment = Alignment.Top,
             modifier = Modifier.padding(12.dp, 8.dp)
         ) {
-            AsyncImage(
-                model = comment.photoUrl,
-                contentDescription = comment.username,
-                Modifier.size(30.dp).clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            if(comment.photoUrl.isBlank() || comment.photoUrl == "null"){
+                Icon(Icons.Default.AccountCircle, null, Modifier.size(40.dp))
+            }else {
+                AsyncImage(
+                    model = comment.photoUrl,
+                    contentDescription = comment.username,
+                    Modifier
+                        .size(36.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Column(Modifier.weight(1f)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)
