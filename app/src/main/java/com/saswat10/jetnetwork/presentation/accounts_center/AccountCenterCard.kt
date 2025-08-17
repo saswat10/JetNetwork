@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -105,9 +106,14 @@ fun Modifier.card(): Modifier{
 fun ExitAppCard(onSignOutClick: () -> Unit) {
     var showExitAppDialog by remember { mutableStateOf(false) }
 
-    AccountCenterCard(stringResource(R.string.sign_out),
-        Icons.AutoMirrored.Filled.ExitToApp, Modifier.card()) {
-        showExitAppDialog = true
+//    AccountCenterCard(stringResource(R.string.sign_out),
+//        Icons.AutoMirrored.Filled.ExitToApp, Modifier.card()) {
+//        showExitAppDialog = true
+//    }
+    IconButton(
+        onClick = {showExitAppDialog = true}
+    ) {
+        Icon(Icons.AutoMirrored.Filled.ExitToApp, stringResource(R.string.sign_out))
     }
 
     if (showExitAppDialog) {

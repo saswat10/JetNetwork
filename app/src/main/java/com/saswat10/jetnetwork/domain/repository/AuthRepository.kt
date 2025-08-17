@@ -12,7 +12,7 @@ interface AuthRepository {
     fun hasUser(): Boolean
     fun getUserProfile(): User
     suspend fun updateDisplayName(newDisplayName: String)
-    suspend fun updateProfilePic(profilePic: Uri)
+    suspend fun updateProfilePic(profilePic: Uri?)
     suspend fun createAnonymousAccount()
     suspend fun linkAccountWithGoogle(idToken: String)
     suspend fun linkAccountWithEmail(email: String, password: String)
