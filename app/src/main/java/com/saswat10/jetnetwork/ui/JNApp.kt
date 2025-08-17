@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -87,12 +87,16 @@ fun JNApp() {
                                 NavigationBarItem(
                                     icon = { Icon(painterResource(destination.icon), null) },
                                     label = { Text(destination.title) },
-                                    selected = index == selectedIndex,
+                                    selected = currentDestination?.hierarchy?.any {
+                                        it.hasRoute(
+                                            destination.route::class
+                                        )
+                                    } == true,
                                     onClick = {
-                                        selectedIndex = index
-                                        appState.navController.navigate(destination.route) {
-                                            popUpTo(appState.navController.graph.findStartDestination().id) {
+                                        appState.navController.navigate(destination.route){
+                                            popUpTo(FeedScreen){
                                                 saveState = true
+                                                inclusive = false
                                             }
                                             launchSingleTop = true
                                             restoreState = true
