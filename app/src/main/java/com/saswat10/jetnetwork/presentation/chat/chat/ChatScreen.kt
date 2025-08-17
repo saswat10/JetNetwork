@@ -39,9 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.saswat10.jetnetwork.presentation.chat.components.MessageItem
 import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarNavigationIcon
 import com.saswat10.jetnetwork.ui.ProvideJNTopAppBarTitle
-import com.saswat10.jetnetwork.presentation.chat.components.MessageItem
+import com.saswat10.jetnetwork.utils.formattedTime
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ChatScreen(
@@ -57,6 +61,7 @@ fun ChatScreen(
     val currentUserId = viewModel.currentUserId
     val participant = viewModel.participant.collectAsStateWithLifecycle()
     var comment by remember { mutableStateOf("") }
+    val status by viewModel.status.collectAsStateWithLifecycle()
     val scrollState = rememberLazyListState()
 
     LaunchedEffect(messagesWithDate) {
@@ -76,9 +81,9 @@ fun ChatScreen(
         ) {
             participant.let { user ->
                 user.value?.let {
-                    if(it.photoUrl.isBlank()){
+                    if (it.photoUrl.isBlank()) {
                         Icon(Icons.Default.AccountCircle, null, Modifier.size(30.dp))
-                    }else {
+                    } else {
                         AsyncImage(
                             model = it.photoUrl,
                             contentDescription = it.displayName,
@@ -88,7 +93,21 @@ fun ChatScreen(
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Text(it.displayName, style = MaterialTheme.typography.titleMedium)
+                    Column {
+                        Text(it.displayName, style = MaterialTheme.typography.titleMedium)
+                        if (status.isOnline) {
+                            Text(text = "Online", style = MaterialTheme.typography.labelSmall)
+                        } else {
+                            val lastSeenTime = if (status.lastSeen != null) {
+                                val formattedTime =
+                                    formattedTime(status.lastSeen!!)
+                                "last seen $formattedTime"
+                            } else {
+                                "Offline"
+                            }
+                            Text(text = lastSeenTime, style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
                 }
             }
 
@@ -156,8 +175,10 @@ fun ChatScreen(
             shape = CircleShape,
             trailingIcon = {
                 FilledIconButton(onClick = {
-                    viewModel.addMessage(conversationId, comment)
-                    comment = ""
+                    if(comment.isNotBlank()) {
+                        viewModel.addMessage(conversationId, comment)
+                        comment = ""
+                    }
                 }, modifier = Modifier.padding(4.dp)) {
                     Icon(Icons.AutoMirrored.Filled.Send, "Send")
                 }

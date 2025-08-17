@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.saswat10.jetnetwork.JNViewModel
 import com.saswat10.jetnetwork.domain.repository.AuthRepository
+import com.saswat10.jetnetwork.domain.repository.OnlineStatusRepository
 import com.saswat10.jetnetwork.ui.FeedScreen
 import com.saswat10.jetnetwork.ui.LoginScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val onlineStatusRepository: OnlineStatusRepository
 ): JNViewModel() {
 
     fun onAppStart(clearAndNavigate:(Any)->Unit){
@@ -25,6 +27,7 @@ class SplashViewModel @Inject constructor(
                 clearAndNavigate(LoginScreen)
             } else {
                 Log.d("USER", "User is not anonymous")
+                onlineStatusRepository.setOnlineStatus(authRepository.currentUserId)
                 clearAndNavigate(FeedScreen)
             }
         }
