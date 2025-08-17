@@ -96,7 +96,6 @@ fun JNApp() {
                                         appState.navController.navigate(destination.route){
                                             popUpTo(FeedScreen){
                                                 saveState = true
-                                                inclusive = false
                                             }
                                             launchSingleTop = true
                                             restoreState = true

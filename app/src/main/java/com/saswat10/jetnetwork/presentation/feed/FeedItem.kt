@@ -117,15 +117,15 @@ fun FeedItem(
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     feed.content,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     maxLines = if (isExpanded) Int.MAX_VALUE else 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.animateContentSize()
                 )
-                if (feed.content.length > 40) {
+                if (feed.content.trim().length > 60) {
                     Text(
                         text = if (isExpanded) "Show Less" else "Read More",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .padding(top = 10.dp, end = 10.dp)
