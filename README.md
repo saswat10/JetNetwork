@@ -1,6 +1,6 @@
 # JETNETWORK
 
-
+[![Video Embed](./screenshots/image.png)](./screenshots/jetnetwork-demo.mp4)
 
 > **SHORT DESCRIPTION**
 >
